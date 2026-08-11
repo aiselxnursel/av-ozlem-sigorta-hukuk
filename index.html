@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sigorta şirketi davalı vekili için hukuki danışmanlık, dilekçe hazırlama ve mali risk analiz sistemi">
+  <title>Sigorta Hukuk Sistemi — Mali Risk & Dava Yönetimi</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="app-container">
+  <!-- ==================== HEADER ==================== -->
+  <header class="app-header">
+    <div class="app-logo">
+      <div class="app-logo-icon">⚖</div>
+      <div class="app-logo-text">
+        <h1>Sigorta Hukuk Sistemi</h1>
+        <span>Mali Risk Analizi & Dava Yönetimi</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost btn-sm" onclick="openIctihatModal()" title="Emsal Karar Kütüphanesi">📚 İçtihat Kütüphanesi</button>
+      <button class="btn btn-ghost btn-sm" onclick="saveToStorage()" title="Dosyayı Kaydet">Kaydet</button>
+      <button class="btn btn-ghost btn-sm" onclick="loadFromStorage()" title="Kayıtlı Dosyayı Yükle">Yükle</button>
+      <button class="btn btn-ghost btn-sm" onclick="resetForm()" title="Formu Sıfırla">Sıfırla</button>
+    </div>
+  </header>
+
+  <!-- ==================== PROGRESS ==================== -->
+  <div class="progress-container">
+    <div class="progress-bar-wrapper">
+      <div class="progress-bar-fill" id="progressFill" style="width: 10%"></div>
+    </div>
+    <div class="progress-steps" id="progressSteps">
+      <div class="progress-step active" data-step="1" onclick="goToStep(1)">
+        <div class="progress-step-number">1</div>
+        <div class="progress-step-label">Dosya Bilgisi</div>
+      </div>
+      <div class="progress-step" data-step="2" onclick="goToStep(2)">
+        <div class="progress-step-number">2</div>
+        <div class="progress-step-label">Taraflar</div>
+      </div>
+      <div class="progress-step" data-step="3" onclick="goToStep(3)">
+        <div class="progress-step-number">3</div>
+        <div class="progress-step-label">Olay Bilgisi</div>
+      </div>
+      <div class="progress-step" data-step="4" onclick="goToStep(4)">
+        <div class="progress-step-number">4</div>
+        <div class="progress-step-label">Kusur</div>
+      </div>
+      <div class="progress-step" data-step="5" onclick="goToStep(5)">
+        <div class="progress-step-number">5</div>
+        <div class="progress-step-label">Maluliyet</div>
+      </div>
+      <div class="progress-step" data-step="6" onclick="goToStep(6)">
+        <div class="progress-step-number">6</div>
+        <div class="progress-step-label">Tazminat</div>
+      </div>
+      <div class="progress-step" data-step="7" onclick="goToStep(7)">
+        <div class="progress-step-number">7</div>
+        <div class="progress-step-label">Cevap Dilekçesi</div>
+      </div>
+      <div class="progress-step" data-step="8" onclick="goToStep(8)">
+        <div class="progress-step-number">8</div>
+        <div class="progress-step-label">Rapor İtirazı</div>
+      </div>
+      <div class="progress-step" data-step="9" onclick="goToStep(9)">
+        <div class="progress-step-number">9</div>
+        <div class="progress-step-label">Karar Analizi</div>
+      </div>
+      <div class="progress-step" data-step="10" onclick="goToStep(10)">
+        <div class="progress-step-number">10</div>
+        <div class="progress-step-label">Mali Rapor</div>
+      </div>
+      <div class="progress-step" data-step="11" onclick="goToStep(11)">
+        <div class="progress-step-number">11</div>
+        <div class="progress-step-label">İcra Hesabı</div>
+      </div>
+      <div class="progress-step" data-step="12" onclick="goToStep(12)">
+        <div class="progress-step-number">12</div>
+        <div class="progress-step-label">Mail Taslağı</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STEP 1: DOSYA BİLGİSİ ==================== -->
+  <div class="step-content active" id="step1">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">I</div>
+        <div>
+          <div class="card-title">Dosya Tanımlama</div>
+          <div class="card-subtitle">Dava ve poliçe bilgilerini giriniz</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Dava Bilgileri</div>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Dosya Numarası <span class="required">*</span></label>
+            <input type="text" class="form-input" id="dosyaNo" placeholder="Ör: 2026/1234">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mahkeme</label>
+            <input type="text" class="form-input" id="mahkeme" placeholder="Ör: İstanbul 5. Asliye Ticaret">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Esas Numarası</label>
+            <input type="text" class="form-input" id="esasNo" placeholder="Ör: 2026/456 E.">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Poliçe & Hasar Türü</div>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Poliçe Türü <span class="required">*</span></label>
+            <select class="form-select" id="policeTuru">
+              <option value="">Seçiniz...</option>
+              <option value="zmss">Zorunlu Mali Mesuliyet (ZMSS/Trafik)</option>
+              <option value="kasko">Kasko</option>
+              <option value="imm">İhtiyari Mali Mesuliyet (İMM)</option>
+              <option value="kfk">Koltuk Ferdi Kaza (KFK)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hasar Türü <span class="required">*</span></label>
+            <select class="form-select" id="hasarTuru" onchange="toggleBedeniFields()">
+              <option value="">Seçiniz...</option>
+              <option value="maddi">Maddi Hasar</option>
+              <option value="bedeni">Bedeni Hasar</option>
+              <option value="karma">Karma (Maddi + Bedeni)</option>
+              <option value="olumlu">Ölümlü</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dava Türü</label>
+            <select class="form-select" id="davaTuru">
+              <option value="">Seçiniz...</option>
+              <option value="tazminat">Tazminat Davası</option>
+              <option value="rucuen">Rücuen Tazminat</option>
+              <option value="itiraziniptali">İtirazın İptali</option>
+              <option value="menfitespit">Menfi Tespit</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid form-grid-2 mt-md">
+          <div class="form-group">
+            <label class="form-label">Dava Niteliği</label>
+            <select class="form-select" id="davaNiteligi">
+              <option value="">Seçiniz...</option>
+              <option value="belirsiz">Belirsiz Alacak Davası (HMK m. 107)</option>
+              <option value="kismi">Kısmi Dava</option>
+              <option value="tam">Tam Eda Davası</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dava Değeri (TL)</label>
+            <input type="number" class="form-input" id="davaDegeri" placeholder="0,00" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <div class="step-navigation">
+        <div></div>
+        <button class="btn btn-primary" onclick="nextStep()">Devam → Taraf Bilgileri</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STEP 2: TARAF BİLGİLERİ ==================== -->
+  <div class="step-content" id="step2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">II</div>
+        <div>
+          <div class="card-title">Taraf Bilgileri</div>
+          <div class="card-subtitle">Davacı, davalı ve sigortalı bilgileri</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Davacı Bilgileri</div>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Davacı Adı Soyadı</label>
+            <input type="text" class="form-input" id="davaciAd" placeholder="Ad Soyad">
+          </div>
+          <div class="form-group">
+            <label class="form-label">TC Kimlik No</label>
+            <input type="text" class="form-input" id="davaciTC" placeholder="11 haneli TC" maxlength="11">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Davacı Vekili</label>
+            <input type="text" class="form-input" id="davaciVekil" placeholder="Av. Ad Soyad">
+          </div>
+        </div>
+        <div class="form-grid form-grid-3 mt-md">
+          <div class="form-group">
+            <label class="form-label">Doğum Tarihi</label>
+            <input type="date" class="form-input" id="davaciDogumTarihi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mesleği</label>
+            <input type="text" class="form-input" id="davaciMeslek" placeholder="Ör: Serbest çalışan">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Aylık Net Geliri (TL)</label>
+            <input type="number" class="form-input" id="davaciGelir" placeholder="0,00" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Davalı (Sigorta Şirketi) Bilgileri</div>
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Sigorta Şirketi Adı</label>
+            <input type="text" class="form-input" id="sigortaSirketi" placeholder="Ör: X Sigorta A.Ş.">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Poliçe Numarası</label>
+            <input type="text" class="form-input" id="policeNo" placeholder="Poliçe no">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Sigortalı / Sürücü Bilgileri</div>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Sigortalı Adı Soyadı</label>
+            <input type="text" class="form-input" id="sigortaliAd" placeholder="Ad Soyad">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sürücü Adı Soyadı</label>
+            <input type="text" class="form-input" id="surucuAd" placeholder="Ad Soyad">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Plaka</label>
+            <input type="text" class="form-input" id="plaka" placeholder="Ör: 34 ABC 123">
+          </div>
+        </div>
+      </div>
+
+      <div class="step-navigation">
+        <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+        <button class="btn btn-primary" onclick="nextStep()">Devam → Olay Bilgisi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STEP 3: OLAY BİLGİSİ ==================== -->
+  <div class="step-content" id="step3">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">III</div>
+        <div>
+          <div class="card-title">Olay ve Süre Bilgileri</div>
+          <div class="card-subtitle">Kaza tarihi, poliçe süresi ve başvuru bilgileri</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Tarihler</div>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Kaza / Olay Tarihi <span class="required">*</span></label>
+            <input type="date" class="form-input" id="kazaTarihi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dava Tarihi <span class="required">*</span></label>
+            <input type="date" class="form-input" id="davaTarihi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tebliğ Tarihi</label>
+            <input type="date" class="form-input" id="tebligTarihi">
+          </div>
+        </div>
+        <div class="form-grid form-grid-3 mt-md">
+          <div class="form-group">
+            <label class="form-label">Poliçe Başlangıç</label>
+            <input type="date" class="form-input" id="policeBaslangic">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Poliçe Bitiş</label>
+            <input type="date" class="form-input" id="policeBitis">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Poliçe Limiti (TL)</label>
+            <input type="number" class="form-input" id="policeLimiti" placeholder="0,00" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Önceki Başvuru ve İşlemler</div>
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label class="form-label">KTK m.97 Başvuru Tarihi</label>
+            <input type="date" class="form-input" id="ktk97Tarihi">
+            <span class="form-hint">Sigortacıya yazılı başvuru tarihi</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tahkim Başvuru Tarihi</label>
+            <input type="date" class="form-input" id="tahkimTarihi">
+          </div>
+        </div>
+        <div class="form-grid form-grid-2 mt-md">
+          <div class="form-group">
+            <label class="form-label">Önceki Ödeme Tutarı (TL)</label>
+            <input type="number" class="form-input" id="oncekiOdeme" placeholder="0,00" step="0.01">
+            <span class="form-hint">Şirket tarafından yapılmış ödeme varsa</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ödeme Tarihi</label>
+            <input type="date" class="form-input" id="odemeTarihi">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Ceza Dosyası</div>
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Ceza Dosyası Var mı?</label>
+            <select class="form-select" id="cezaDosyasi" onchange="toggleCezaFields()">
+              <option value="yok">Hayır / Bilinmiyor</option>
+              <option value="sorusturma">Soruşturma aşamasında</option>
+              <option value="kovusturma">Kovuşturma aşamasında</option>
+              <option value="karar">Karar verilmiş</option>
+              <option value="kyok">KYOK (Kovuşturmaya Yer Olmadığı)</option>
+            </select>
+          </div>
+          <div class="form-group" id="cezaSucVasfiGroup">
+            <label class="form-label">Suç Vasfı</label>
+            <select class="form-select" id="sucVasfi">
+              <option value="">Seçiniz...</option>
+              <option value="taksirle_yaralama">Taksirle Yaralama (TCK m. 89)</option>
+              <option value="bilinçli_taksir_yaralama">Bilinçli Taksirle Yaralama</option>
+              <option value="taksirle_oldurme">Taksirle Öldürme (TCK m. 85)</option>
+              <option value="bilinçli_taksir_oldurme">Bilinçli Taksirle Öldürme</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="zamanAsimiAnaliz" class="alert alert-info mt-lg hidden">
+        <div class="alert-icon">⏱</div>
+        <div>
+          <strong>Zamanaşımı Ön Analizi:</strong>
+          <div id="zamanAsimiSonuc"></div>
+        </div>
+      </div>
+
+      <div class="step-navigation">
+        <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+        <button class="btn btn-primary" onclick="analyzeZamanAsimi(); nextStep()">Devam → Kusur Analizi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STEP 4: KUSUR ANALİZİ ==================== -->
+  <div class="step-content" id="step4">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">IV</div>
+        <div>
+          <div class="card-title">Kusur Analizi</div>
+          <div class="card-subtitle">Kusur bilirkişisi perspektifiyle değerlendirme</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Kusur Dağılımı</div>
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Karşı Taraf (Sigortalı/Sürücü) Kusur Oranı</label>
+            <div class="form-range-wrapper">
+              <input type="range" class="form-range" id="kusurOrani" min="0" max="100" value="50" oninput="updateKusur()">
+              <div class="form-range-value" id="kusurOraniDisplay">%50</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Davacı Kusur Oranı (Müterafik Kusur)</label>
+            <div class="form-range-wrapper">
+              <input type="range" class="form-range" id="davaciKusur" min="0" max="100" value="50" oninput="updateKusur()">
+              <div class="form-range-value" id="davaciKusurDisplay">%50</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-grid form-grid-2 mt-md">
+          <div class="form-group">
+            <label class="form-label">Kusur Türü (Sigortalı)</label>
+            <select class="form-select" id="kusurTuru">
+              <option value="">Seçiniz...</option>
+              <option value="asli">Asli Kusurlu</option>
+              <option value="tali">Tali Kusurlu</option>
+              <option value="kusursuz">Kusursuz</option>
+              <option value="tam">Tam Kusurlu (%100)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bilirkişi Raporu Kusur Oranı (%)</label>
+            <input type="number" class="form-input" id="bilirkisiKusur" placeholder="Bilirkişi raporundaki oran" min="0" max="100">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Kusur İtiraz Noktaları</div>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <div class="form-check">
+              <input type="checkbox" id="kttHata" value="ktt_hata">
+              <label for="kttHata">Kaza Tespit Tutanağı'nda usul/esasa ilişkin hata var</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="tanikTutarsiz" value="tanik">
+              <label for="tanikTutarsiz">Tanık beyanları birbiriyle tutarsız</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="kameraKaydi" value="kamera">
+              <label for="kameraKaydi">MOBESE / kamera kaydı mevcut</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="alkol" value="alkol">
+              <label for="alkol">Davacıda alkol/uyuşturucu tespit edilmiş</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="ehliyetsiz" value="ehliyetsiz">
+              <label for="ehliyetsiz">Davacı ehliyetsiz / ehliyet sınıfı uyumsuz</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="emniyet" value="emniyet">
+              <label for="emniyet">Emniyet kemeri takılı değildi</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="hizIhlali" value="hiz">
+              <label for="hizIhlali">Hız ihlali tespit edilmiş</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group mt-md full-width">
+          <label class="form-label">Ek Kusur Notları</label>
+          <textarea class="form-textarea" id="kusurNotlari" placeholder="Kusura ilişkin ek değerlendirmeleriniz..."></textarea>
+        </div>
+      </div>
+
+      <div class="step-navigation">
+        <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+        <button class="btn btn-primary" onclick="nextStep()">Devam → Maluliyet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STEP 5: MALULİYET ==================== -->
+  <div class="step-content" id="step5">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">V</div>
+        <div>
+          <div class="card-title">Maluliyet Değerlendirmesi</div>
+          <div class="card-subtitle">Tıbbi ve mevzuat açısından maluliyet analizi</div>
+        </div>
+      </div>
+
+      <div id="maluliyetBedeniUyari" class="alert alert-info">
+        <div class="alert-icon">i</div>
+        <div>Bu bölüm yalnızca bedeni hasarlı, karma veya ölümlü dosyalarda aktiftir. Maddi hasarlı dosyalarda bu adımı atlayabilirsiniz.</div>
+      </div>
+
+      <div id="maluliyetForm">
+        <div class="form-section">
+          <div class="form-section-title">Yaralanma Bilgileri</div>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label class="form-label">Yaralanma Türleri</label>
+              <div class="form-grid form-grid-3">
+                <div class="form-check">
+                  <input type="checkbox" id="yKafa" value="kafa"> <label for="yKafa">Kafa travması</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" id="yOmurga" value="omurga"> <label for="yOmurga">Omurga/Boyun</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" id="yGogus" value="gogus"> <label for="yGogus">Göğüs / Karın</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" id="yUstEks" value="ust_eks"> <label for="yUstEks">Üst ekstremite (kol/el)</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" id="yAltEks" value="alt_eks"> <label for="yAltEks">Alt ekstremite (bacak/ayak)</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" id="yIcOrgan" value="ic_organ"> <label for="yIcOrgan">İç organ hasarı</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" id="yYuz" value="yuz"> <label for="yYuz">Yüz/Diş yaralanması</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" id="yPsikolojik" value="psikolojik"> <label for="yPsikolojik">Psikolojik travma (TSSB)</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Tedavi ve İş Göremezlik</div>
+          <div class="form-grid form-grid-3">
+            <div class="form-group">
+              <label class="form-label">Hastane Yatış Süresi (gün)</label>
+              <input type="number" class="form-input" id="hastaneGun" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Geçici İş Göremezlik (gün)</label>
+              <input type="number" class="form-input" id="geciciIsGoremezlik" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ameliyat Sayısı</label>
+              <input type="number" class="form-input" id="ameliyatSayisi" placeholder="0" min="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Kalıcı Maluliyet</div>
+          <div class="form-grid form-grid-3">
+            <div class="form-group">
+              <label class="form-label">Maluliyet Oranı (%)</label>
+              <div class="form-range-wrapper">
+                <input type="range" class="form-range" id="maluliyetOrani" min="0" max="100" value="0" oninput="document.getElementById('maluliyetDisplay').textContent = '%' + this.value">
+                <div class="form-range-value" id="maluliyetDisplay">%0</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Rapor Kaynağı</label>
+              <select class="form-select" id="raporKaynagi">
+                <option value="">Seçiniz...</option>
+                <option value="atk">Adli Tıp Kurumu (ATK)</option>
+                <option value="universite">Üniversite Hastanesi</option>
+                <option value="ozel">Özel Sağlık Kuruluşu</option>
+                <option value="bilirkisi">Bilirkişi Heyet Raporu</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Uygulanan Yönetmelik</label>
+              <select class="form-select" id="maluliyetYonetmelik">
+                <option value="">Seçiniz...</option>
+                <option value="calisma_gucu">Çalışma Gücü Kaybı Tespit Yönetmeliği</option>
+                <option value="ozurluluk">Özürlülük Ölçütleri Yönetmeliği</option>
+                <option value="balthazard">Balthazard Formülü</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Maluliyet İtiraz Noktaları</div>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <div class="form-check">
+                <input type="checkbox" id="mOranYuksek" value="oran_yuksek">
+                <label for="mOranYuksek">Maluliyet oranı yüksek belirlenmiş — düşürülmesi talep edilecek</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="mYonetmelikHata" value="yonetmelik">
+                <label for="mYonetmelikHata">Yanlış yönetmelik uygulanmış</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="mIlliyetBag" value="illiyet">
+                <label for="mIlliyetBag">İlliyet bağı sorunu — kaza öncesi mevcut rahatsızlık</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="mATKSevk" value="atk_sevk">
+                <label for="mATKSevk">ATK'ya sevk talebi ileri sürülecek</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="mTedaviTamamlanmadi" value="tedavi">
+                <label for="mTedaviTamamlanmadi">Tedavi tamamlanmadan maluliyet oranı belirlenmiş</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-md">
+            <label class="form-label">Ek Tıbbi Notlar</label>
+            <textarea class="form-textarea" id="tibbiNotlar" placeholder="Tıbbi değerlendirmeye ilişkin ek notlarınız..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-navigation">
+        <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+        <button class="btn btn-primary" onclick="nextStep()">Devam → Tazminat Hesaplama</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STEP 6: TAZMİNAT HESAPLAMA ==================== -->
+  <div class="step-content" id="step6">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">VI</div>
+        <div>
+          <div class="card-title">Tazminat Hesaplama (Aktüerya Modülü)</div>
+          <div class="card-subtitle">Tazminat kalemleri, aktüerya hesaplamaları ve itiraz noktaları</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('maddiHasar', this)">Maddi Hasar</button>
+        <button class="tab-btn" onclick="switchTab('bedeniHasar', this)">Bedeni Hasar</button>
+        <button class="tab-btn" onclick="switchTab('aktuerya', this)">Aktüerya Parametreleri</button>
+        <button class="tab-btn" onclick="switchTab('hesapItiraz', this)">İtiraz Noktaları</button>
+      </div>
+
+      <!-- Tab: Maddi Hasar -->
+      <div class="tab-content active" id="tab-maddiHasar">
+        <div class="form-section">
+          <div class="form-section-title">Maddi Hasar Kalemleri</div>
+          <div class="form-grid form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Araç Hasar Bedeli (TL)</label>
+              <input type="number" class="form-input" id="aracHasar" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Değer Kaybı (TL)</label>
+              <input type="number" class="form-input" id="degerKaybi" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kazanç Kaybı (TL)</label>
+              <input type="number" class="form-input" id="kazancKaybi" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+              <span class="form-hint">Ticari araçlarda</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Çekici / İkame Araç (TL)</label>
+              <input type="number" class="form-input" id="cekiciGideri" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Bedeni Hasar -->
+      <div class="tab-content" id="tab-bedeniHasar">
+        <div class="form-section">
+          <div class="form-section-title">Bedeni Hasar Kalemleri</div>
+          <div class="form-grid form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Geçici İş Göremezlik Tazminatı (TL)</label>
+              <input type="number" class="form-input" id="geciciTazminat" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sürekli İş Göremezlik Tazminatı (TL)</label>
+              <input type="number" class="form-input" id="surekliTazminat" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bakıcı Gideri (TL)</label>
+              <input type="number" class="form-input" id="bakiciGideri" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tedavi Giderleri (TL)</label>
+              <input type="number" class="form-input" id="tedaviGideri" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Manevi Tazminat (TL)</label>
+              <input type="number" class="form-input" id="maneviTazminat" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Destekten Yoksun Kalma (TL)</label>
+              <input type="number" class="form-input" id="destekTazminat" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+              <span class="form-hint">Ölümlü dosyalarda</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Aktüerya Parametreleri -->
+      <div class="tab-content" id="tab-aktuerya">
+        <div class="form-section">
+          <div class="form-section-title">Hesaplama Parametreleri</div>
+          <div class="form-grid form-grid-3">
+            <div class="form-group">
+              <label class="form-label">PMF Yaşam Tablosu</label>
+              <select class="form-select" id="pmfTablosu">
+                <option value="trh2010">TRH-2010</option>
+                <option value="cso1980">CSO-1980</option>
+                <option value="pme">PME (Population Mortality Experience)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Teknik Faiz Oranı (%)</label>
+              <input type="number" class="form-input" id="teknikFaiz" value="1.8" step="0.1" min="0" max="10">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hesaplama Yöntemi</label>
+              <select class="form-select" id="hesaplamaYontemi">
+                <option value="progresif">Progresif Rant (1/Kn)</option>
+                <option value="kapitalizasyon">Kapitalizasyon</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid form-grid-3 mt-md">
+            <div class="form-group">
+              <label class="form-label">Aktif Dönem Bitiş Yaşı</label>
+              <input type="number" class="form-input" id="aktifBitis" value="60" min="18" max="75">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Davacı Cinsiyeti</label>
+              <select class="form-select" id="davaciCinsiyet">
+                <option value="erkek">Erkek</option>
+                <option value="kadin">Kadın</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">SGK Peşin Sermaye Değeri Mahsubu (TL)</label>
+              <input type="number" class="form-input" id="sgkMahsupTutar" placeholder="0,00" step="0.01">
+            </div>
+          </div>
+          <div class="form-grid form-grid-2 mt-md">
+            <div class="form-group">
+              <label class="form-label">Asgari Ücret Referansı (TL)</label>
+              <input type="number" class="form-input" id="asgariUcret" value="26006" step="1">
+              <span class="form-hint">2026 yılı 1. yarıyıl brüt asgari ücret</span>
+            </div>
+          </div>
+          <div class="mt-md">
+            <button type="button" class="btn btn-gold btn-lg" onclick="runAktueryaSimulasyonu()" style="width:100%;">TRH-2010 Aktüeryal Tazminat Cetvelini Hesapla</button>
+          </div>
+          <div id="aktueryaSimulasyonOutput" class="hidden mt-md"></div>
+        </div>
+      </div>
+
+      <!-- Tab: İtiraz Noktaları -->
+      <div class="tab-content" id="tab-hesapItiraz">
+        <div class="form-section">
+          <div class="form-section-title">Hesaplama İtiraz Noktaları</div>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <div class="form-check">
+                <input type="checkbox" id="iGelirHata" value="gelir_hata">
+                <label for="iGelirHata">Gelir tespiti hatalı — gerçek gelir belgelenmemiş / düşük olmalı</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="iPmfHata" value="pmf_hata">
+                <label for="iPmfHata">PMF tablosu uyumsuz veya hatalı uygulanmış</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="iMukerrer" value="mukerrer">
+                <label for="iMukerrer">Mükerrer hesaplama yapılmış</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="iSgkMahsup" value="sgk_mahsup">
+                <label for="iSgkMahsup">SGK rücu mahsubu yapılmamış / hatalı</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="iLimitAsim" value="limit_asim">
+                <label for="iLimitAsim">Poliçe limiti aşılmış — limit ile sınırlı sorumluluk</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="iTenzilHata" value="tenzil_hata">
+                <label for="iTenzilHata">Önceki ödemeler tenzil edilmemiş</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="iAktifPasif" value="aktif_pasif">
+                <label for="iAktifPasif">Aktif/pasif dönem ayrımı yapılmamış veya hatalı</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="iFaizHata" value="faiz_hata">
+                <label for="iFaizHata">Teknik faiz oranı yanlış uygulanmış</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="divider"></div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-label">Toplam Maddi Hasar</div>
+          <div class="stat-card-value text-gold" id="toplamMaddi">₺0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Toplam Bedeni Hasar</div>
+          <div class="stat-card-value text-gold" id="toplamBedeni">₺0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Genel Toplam Talep</div>
+          <div class="stat-card-value text-warning" id="genelToplam">₺0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Önceki Ödeme Mahsubu</div>
+          <div class="stat-card-value text-success" id="mahsupTutar">₺0</div>
+        </div>
+      </div>
+
+      <div class="step-navigation">
+        <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+        <button class="btn btn-primary" onclick="nextStep()">Devam → Cevap Dilekçesi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STEP 7: CEVAP DİLEKÇESİ ==================== -->
+  <div class="step-content" id="step7">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">VII</div>
+        <div>
+          <div class="card-title">Cevap Dilekçesi Oluşturma</div>
+          <div class="card-subtitle">Girilen verilere göre otomatik dilekçe taslağı</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Dilekçeye Dahil Edilecek Savunmalar</div>
+        <div class="form-grid form-grid-2">
+          <div>
+            <h4 class="mb-md" style="color: var(--gold);">Usuli Savunmalar</h4>
+            <div class="form-check">
+              <input type="checkbox" id="sZamanasimi" checked> <label for="sZamanasimi">Zamanaşımı Def'i</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="sArabuluculuk" checked> <label for="sArabuluculuk">Dava Şartı Arabuluculuk Eksikliği</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="sHusumet"> <label for="sHusumet">Husumet İtirazı</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="sDavaDegeri" checked> <label for="sDavaDegeri">Dava Değeri / Belirsiz Alacak İtirazı</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="sYetki"> <label for="sYetki">Yetki İtirazı</label>
+            </div>
+          </div>
+          <div>
+            <h4 class="mb-md" style="color: var(--gold);">Esasa İlişkin Savunmalar</h4>
+            <div class="form-check">
+              <input type="checkbox" id="sKusur" checked> <label for="sKusur">Kusur İtirazı</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="sTeminat"> <label for="sTeminat">Teminat Dışılık</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="sPoliceLimit" checked> <label for="sPoliceLimit">Poliçe Limiti Savunması</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="sOncekiOdeme" checked> <label for="sOncekiOdeme">Önceki Ödeme Mahsubu</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="sMaluliyet"> <label for="sMaluliyet">Maluliyet İtirazı</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="sHesaplama" checked> <label for="sHesaplama">Hesaplama İtirazı</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="sFaiz" checked> <label for="sFaiz">Faiz İtirazı</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Dilekçe Ayarları</div>
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Dilekçe Varyantı</label>
+            <select class="form-select" id="dilekceVariant">
+              <option value="temkinli">Temkinli (Varsayılan — her dosyaya uygun)</option>
+              <option value="agresif">Agresif (Uzamış zamanaşımı çürütmesi dahil)</option>
+              <option value="ictihat">İçtihat Ağırlıklı</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Davalı Vekili Adı</label>
+            <input type="text" class="form-input" id="davaliVekil" placeholder="Av. Ad Soyad">
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-lg">
+        <button class="btn btn-primary btn-lg" onclick="generatePetition()" style="width: 100%;">Cevap Dilekçesi Oluştur</button>
+      </div>
+
+      <div id="petitionOutput" class="petition-output mt-xl hidden"></div>
+
+      <div id="petitionActions" class="hidden mt-md" style="display: flex; gap: var(--space-sm); justify-content: flex-end;">
+        <button class="btn btn-secondary btn-sm" onclick="copyPetition()">Kopyala</button>
+        <button class="btn btn-secondary btn-sm" onclick="printPetition()">Yazdır</button>
+      </div>
+
+      <div class="step-navigation">
+        <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+        <button class="btn btn-primary" onclick="nextStep()">Devam → Rapor İtirazı</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STEP 8: BİLİRKİŞİ RAPORU İTİRAZI ==================== -->
+  <div class="step-content" id="step8">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">⚡</div>
+        <div>
+          <div class="card-title">Bilirkişi Raporu İtiraz Dilekçesi</div>
+          <div class="card-subtitle">Kusur, aktüerya ve maluliyet raporlarına itiraz</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Rapor Bilgileri</div>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Rapor Tarihi</label>
+            <input type="date" class="form-input" id="raporTarihi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Rapor Türü</label>
+            <select class="form-select" id="raporTuru">
+              <option value="">Seçiniz...</option>
+              <option value="kusur">Kusur Bilirkişi Raporu</option>
+              <option value="aktuerya">Aktüerya / Hesap Bilirkişi Raporu</option>
+              <option value="maluliyet">Maluliyet (Tıbbi) Raporu</option>
+              <option value="deger_kaybi">Değer Kaybı Raporu</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">İtiraz Süresi</label>
+            <select class="form-select" id="itirazSuresi">
+              <option value="2hafta">2 Hafta (Genel)</option>
+              <option value="1hafta">1 Hafta</option>
+              <option value="ozel">Özel Süre Belirlenmiş</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Raporda Hükmedilen Tutarlar</div>
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Raporda Hesaplanan Toplam (TL)</label>
+            <input type="number" class="form-input" id="raporToplam" placeholder="0,00" step="0.01">
+          </div>
+          <div class="form-group">
+            <label class="form-label">İtiraz Ettiğimiz Fark (TL)</label>
+            <input type="number" class="form-input" id="itirazFark" placeholder="0,00" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Ek İtiraz Gerekçeleri</div>
+        <div class="form-group">
+          <textarea class="form-textarea" id="ekItirazGerekce" placeholder="Rapora itiraz gerekçelerinizi detaylı yazınız..." style="min-height: 120px;"></textarea>
+        </div>
+      </div>
+
+      <div class="mt-lg">
+        <button class="btn btn-primary btn-lg" onclick="generateObjection()" style="width: 100%;">⚡ İtiraz Dilekçesi Oluştur</button>
+      </div>
+
+      <div id="objectionOutput" class="petition-output mt-xl hidden"></div>
+
+      <div id="objectionActions" class="hidden mt-md" style="display: flex; gap: var(--space-sm); justify-content: flex-end;">
+        <button class="btn btn-secondary btn-sm" onclick="copyObjection()">Kopyala</button>
+      </div>
+
+      <div class="step-navigation">
+        <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+        <button class="btn btn-primary" onclick="nextStep()">Devam → Karar Analizi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STEP 9: KARAR ANALİZİ ==================== -->
+  <div class="step-content" id="step9">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">&#9878;</div>
+        <div>
+          <div class="card-title">Karar İnceleme ve Kanun Yolu Analizi</div>
+          <div class="card-subtitle">İstinaf / temyiz değerlendirmesi ve parasal sınır kontrolü</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Karar Bilgileri</div>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Kararı Veren Mahkeme</label>
+            <select class="form-select" id="kararMahkeme">
+              <option value="">Seçiniz...</option>
+              <option value="ilk_derece">İlk Derece Mahkemesi</option>
+              <option value="bam">Bölge Adliye Mahkemesi (BAM)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Karar Sonucu</label>
+            <select class="form-select" id="kararSonucu">
+              <option value="">Seçiniz...</option>
+              <option value="kabul">Davanın Kabulü</option>
+              <option value="kismi_kabul">Kısmen Kabul / Kısmen Ret</option>
+              <option value="red">Davanın Reddi</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Karar Tarihi</label>
+            <input type="date" class="form-input" id="kararTarihi">
+          </div>
+        </div>
+        <div class="form-grid form-grid-3 mt-md">
+          <div class="form-group">
+            <label class="form-label">Tebliğ Tarihi</label>
+            <input type="date" class="form-input" id="kararTebligTarihi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hükmedilen Anapara (TL)</label>
+            <input type="number" class="form-input" id="hukumAnapara" placeholder="0,00" step="0.01">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hükmedilen Manevi Tazminat (TL)</label>
+            <input type="number" class="form-input" id="hukumManevi" placeholder="0,00" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Faiz ve Giderler</div>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Faiz Türü</label>
+            <select class="form-select" id="faizTuru">
+              <option value="yasal">Yasal Faiz (%24)</option>
+              <option value="avans">Avans Faizi (%51)</option>
+              <option value="tcmb">TCMB Reeskont (%48)</option>
+            </select>
+            <span class="form-hint">2026 yılı güncel oranlar</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Faiz Başlangıç Tarihi</label>
+            <input type="date" class="form-input" id="faizBaslangic">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Yargılama Giderleri (TL)</label>
+            <input type="number" class="form-input" id="yargilamaGiderleri" placeholder="0,00" step="0.01">
+          </div>
+        </div>
+        <div class="form-grid form-grid-2 mt-md">
+          <div class="form-group">
+            <label class="form-label">Karşı Vekalet Ücreti (TL)</label>
+            <input type="number" class="form-input" id="karsiVekaletUcreti" placeholder="0,00" step="0.01">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Reddedilen Kısım Vekalet Ücreti (TL)</label>
+            <input type="number" class="form-input" id="retVekaletUcreti" placeholder="0,00" step="0.01">
+            <span class="form-hint">Kısmen ret kararlarında lehimize</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">İstinaf / Temyiz Değerlendirme Kriterleri</div>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <div class="form-check">
+              <input type="checkbox" id="kZamanAsimiDegerlendirilmemis">
+              <label for="kZamanAsimiDegerlendirilmemis">Zamanaşımı def'i süresinde ileri sürülmüş ancak kararda değerlendirilmemiş</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="kKusurHatasi">
+              <label for="kKusurHatasi">Kusur oranı hatalı belirlenmiş</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="kHesaplamaHatasi">
+              <label for="kHesaplamaHatasi">Tazminat hesaplamasında esaslı hata var</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="kMaluliyetHatasi">
+              <label for="kMaluliyetHatasi">Maluliyet oranı hatalı — ATK'ya sevk yapılmamış</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="kTeminatDisi">
+              <label for="kTeminatDisi">Teminat dışı kalan kalemlere hükmedilmiş</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="kLimitAsimi">
+              <label for="kLimitAsimi">Poliçe limiti aşılarak hüküm kurulmuş</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-lg">
+        <button class="btn btn-primary btn-lg" onclick="analyzeDecision()" style="width: 100%;">Karar Analizi Yap</button>
+      </div>
+
+      <div id="decisionAnalysis" class="mt-xl hidden">
+        <!-- Dinamik olarak doldurulacak -->
+      </div>
+
+      <div class="step-navigation">
+        <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+        <button class="btn btn-primary" onclick="generateReport(); nextStep()">Devam → Mali Rapor</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STEP 10: MALİ RİSK RAPORU ==================== -->
+  <div class="step-content" id="step10">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">X</div>
+        <div>
+          <div class="card-title">Kurumsal Mali Risk Raporu</div>
+          <div class="card-subtitle">Sigorta şirketine sunulacak karşılaştırmalı senaryo analizi</div>
+        </div>
+      </div>
+
+      <div class="mt-md mb-lg" style="display: flex; gap: var(--space-sm);">
+        <button class="btn btn-primary" onclick="generateReport()">Raporu Oluştur / Güncelle</button>
+        <button class="btn btn-secondary" onclick="printReport()">Yazdır / PDF</button>
+        <button class="btn btn-secondary" onclick="copyReport()">Kopyala</button>
+      </div>
+
+      <div id="reportOutput">
+        <div class="report-container" id="reportContent">
+          <div class="report-header">
+            <h2>MALİ RİSK ANALİZ RAPORU</h2>
+            <div class="report-meta">
+              <span id="raporDosyaNo">Dosya No: —</span> &nbsp;|&nbsp;
+              <span id="raporTarih">Rapor Tarihi: —</span>
+            </div>
+          </div>
+
+          <!-- A. Dosya Özeti -->
+          <div class="report-section">
+            <div class="report-section-title">A. Dosya Özeti</div>
+            <div id="raporDosyaOzeti">
+              <p class="text-muted">Rapor oluşturulmadı. Yukarıdaki butona tıklayınız.</p>
+            </div>
+          </div>
+
+          <!-- B. Mevcut Borç Yükü -->
+          <div class="report-section">
+            <div class="report-section-title">B. Mevcut Borç Yükü Analizi</div>
+            <div id="raporBorcYuku">
+              <p class="text-muted">—</p>
+            </div>
+          </div>
+
+          <!-- C. Tam Maliyet (En Kötü Senaryo) -->
+          <div class="report-section">
+            <div class="report-section-title">C. Kaybedilme Senaryosu — Tam Maliyet</div>
+            <div id="raporEnKotu">
+              <p class="text-muted">—</p>
+            </div>
+          </div>
+
+          <!-- D. İstinaf/Temyiz Senaryosu -->
+          <div class="report-section">
+            <div class="report-section-title">D. İstinaf / Temyiz Senaryosu</div>
+            <div id="raporIstinaf">
+              <p class="text-muted">—</p>
+            </div>
+          </div>
+
+          <!-- E. Doğrudan Ödeme Senaryosu -->
+          <div class="report-section">
+            <div class="report-section-title">E. Doğrudan Ödeme Senaryosu</div>
+            <div id="raporOdeme">
+              <p class="text-muted">—</p>
+            </div>
+          </div>
+
+          <!-- F. Karşılaştırmalı Tablo -->
+          <div class="report-section">
+            <div class="report-section-title">F. Karşılaştırmalı Senaryo Tablosu</div>
+            <div id="raporKarsilastirma">
+              <p class="text-muted">—</p>
+            </div>
+          </div>
+
+          <!-- G. Risk Skoru -->
+          <div class="report-section">
+            <div class="report-section-title">G. Risk Skoru ve Hukuki Tavsiye</div>
+            <div id="raporTavsiye">
+              <p class="text-muted">—</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-navigation">
+        <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+        <button class="btn btn-primary" onclick="nextStep()">Devam → İcra Kapak Hesabı</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STEP 11: İCRA KAPAK HESABI ==================== -->
+  <div class="step-content" id="step11">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">&#9878;</div>
+        <div>
+          <div class="card-title">İcra Kapak Hesabı</div>
+          <div class="card-subtitle">Ödeme tarihine göre otomatik icra kapak hesabı — harç, faiz ve vekalet otomatik hesaplanır</div>
+        </div>
+      </div>
+
+      <div class="alert alert-info">
+        <div class="alert-icon">i</div>
+        <div>Sistem, güncel mevzuata uygun harç oranlarını, yıllar içinde değişen faiz oranlarını ve AAÜT'ye göre icra vekalet ücretini <strong>otomatik olarak hesaplar</strong>. Siz yalnızca temel dosya bilgilerini giriniz.</div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Takip Bilgileri</div>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label">İcra Müdürlüğü</label>
+            <input type="text" class="form-input" id="icraMudurlugu" placeholder="Ör: İstanbul 12. İcra Müd.">
+          </div>
+          <div class="form-group">
+            <label class="form-label">İcra Dosya No</label>
+            <input type="text" class="form-input" id="icraDosyaNo" placeholder="Ör: 2026/12345 E.">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Takip Türü</label>
+            <select class="form-select" id="takipTuru">
+              <option value="ilamli">İlamlı İcra</option>
+              <option value="ilamsiz">İlamsız İcra</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid form-grid-3 mt-md">
+          <div class="form-group">
+            <label class="form-label">Alacaklı</label>
+            <input type="text" class="form-input" id="icraAlacakli" placeholder="Alacaklı adı">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Borçlu</label>
+            <input type="text" class="form-input" id="icraBorclu" placeholder="Borçlu (müvekkil şirket)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Haciz Durumu</label>
+            <select class="form-select" id="hacizDurumu">
+              <option value="yok">Haciz Yapılmadı</option>
+              <option value="var">Haciz Yapıldı</option>
+              <option value="muhafaza">Haciz + Muhafaza</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Alacak Kalemleri</div>
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Asıl Alacak / Anapara (TL) <span class="required">*</span></label>
+            <input type="number" class="form-input" id="icraAnapara" placeholder="0,00" step="0.01">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Manevi Tazminat (TL)</label>
+            <input type="number" class="form-input" id="icraManevi" placeholder="0,00" step="0.01">
+          </div>
+        </div>
+        <div class="form-grid form-grid-2 mt-md">
+          <div class="form-group">
+            <label class="form-label">Yargılama Giderleri (TL)</label>
+            <input type="number" class="form-input" id="icraYargilamaGideri" placeholder="0,00" step="0.01">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Karar Vekalet Ücreti (TL)</label>
+            <input type="number" class="form-input" id="icraKararVekalet" placeholder="0,00" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Faiz Bilgileri</div>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Faiz Başlangıç Tarihi <span class="required">*</span></label>
+            <input type="date" class="form-input" id="icraFaizBaslangic">
+            <span class="form-hint">Genellikle dava/olay tarihi</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ödeme / Hesap Tarihi <span class="required">*</span></label>
+            <input type="date" class="form-input" id="odemeTarihiIcra">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Faiz Türü</label>
+            <select class="form-select" id="icraFaizTuru">
+              <option value="yasal">Yasal Faiz</option>
+              <option value="avans">Avans Faizi (Ticari İş)</option>
+            </select>
+            <span class="form-hint">Sistem tarihe göre oranı otomatik uygular</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Takip Masrafları</div>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Takip Tarihi</label>
+            <input type="date" class="form-input" id="takipTarihi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tebligat Masrafı (TL)</label>
+            <input type="number" class="form-input" id="icraTebligatMasraf" value="0" step="0.01">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Diğer Masraflar (TL)</label>
+            <input type="number" class="form-input" id="icraDigerMasraf" value="0" step="0.01">
+            <span class="form-hint">Dosya, haciz vs. masraflar</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Kısmi Ödemeler (varsa)</div>
+        <div id="kismiOdemeler">
+          <div class="form-grid form-grid-3 mt-sm kismi-odeme-row">
+            <div class="form-group">
+              <label class="form-label">Ödeme Tarihi</label>
+              <input type="date" class="form-input kismi-tarih">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ödeme Tutarı (TL)</label>
+              <input type="number" class="form-input kismi-tutar" placeholder="0,00" step="0.01">
+            </div>
+            <div class="form-group" style="display:flex; align-items:flex-end;">
+              <button class="btn btn-danger btn-sm" onclick="removeKismiOdeme(this)" style="margin-bottom:4px;">Sil</button>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm mt-md" onclick="addKismiOdeme()">+ Kısmi Ödeme Ekle</button>
+        <div class="form-hint mt-sm">TBK m. 100 uyarınca kısmi ödemeler önce işlemiş faizden, kalan anaparadan mahsup edilir.</div>
+      </div>
+
+      <div class="mt-lg">
+        <button class="btn btn-primary btn-lg" onclick="calculateIcraKapak()" style="width: 100%;">İcra Kapak Hesabı Yap</button>
+      </div>
+
+      <div id="icraKapakOutput" class="mt-xl hidden">
+        <!-- Dinamik olarak doldurulacak -->
+      </div>
+
+      <div id="icraKapakActions" class="hidden mt-md" style="display:flex; gap:var(--space-sm); justify-content:flex-end;">
+        <button class="btn btn-secondary btn-sm" onclick="copyIcraKapak()">Kopyala</button>
+        <button class="btn btn-secondary btn-sm" onclick="printIcraKapak()">Yazdır</button>
+      </div>
+
+      <div class="step-navigation">
+        <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+        <button class="btn btn-primary" onclick="nextStep()">Devam → Mail Taslağı</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STEP 12: MAIL TASLAKLARI ==================== -->
+  <div class="step-content" id="step12">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">&#9993;</div>
+        <div>
+          <div class="card-title">Kurumsal Mail Taslakları</div>
+          <div class="card-subtitle">Sigorta şirketine gönderilecek profesyonel raporlama mailleri</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Mail Türü Seçimi</div>
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Mail Türü <span class="required">*</span></label>
+            <select class="form-select" id="mailTuru">
+              <option value="">Seçiniz...</option>
+              <optgroup label="Dosya Başlangıç">
+                <option value="atanma">Dosya Atanma Bildirimi</option>
+                <option value="ilk_inceleme">İlk İnceleme / Hukuki Görüş Raporu</option>
+              </optgroup>
+              <optgroup label="Yargılama Süreci">
+                <option value="cevap_bilgi">Cevap Dilekçesi Bilgilendirme</option>
+                <option value="bilirkisi_degerlendirme">Bilirkişi Raporu Değerlendirme</option>
+                <option value="islah_bildirim">Islah Bildirimi</option>
+              </optgroup>
+              <optgroup label="Karar Sonrası">
+                <option value="karar_bildirim">Karar Bildirimi & Hukuki Görüş</option>
+                <option value="istinaf_tavsiye">İstinaf/Temyiz Tavsiyesi</option>
+                <option value="odeme_tavsiye">Doğrudan Ödeme Tavsiyesi</option>
+              </optgroup>
+              <optgroup label="İcra Süreci">
+                <option value="icra_bildirim">İcra Takibi Bildirimi</option>
+                <option value="odeme_listesi">Ödeme Listesi Gönderimi</option>
+              </optgroup>
+              <optgroup label="Özel Dosya Türleri">
+                <option value="dyk_rapor">Destekten Yoksun Kalma (DYK) Raporu</option>
+                <option value="surekli_isgoremezlik">Sürekli İş Göremezlik Raporu</option>
+                <option value="rucuen">Rücuen Tazminat Dosyası Raporu</option>
+              </optgroup>
+              <optgroup label="Dosya Kapanış">
+                <option value="kapanis">Dosya Kapanış Bildirimi</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Alıcı (Şirket İlgili Kişi)</label>
+            <input type="text" class="form-input" id="mailAlici" placeholder="Ör: Sayın Hasar Departmanı">
+          </div>
+        </div>
+        <div class="form-grid form-grid-2 mt-md">
+          <div class="form-group">
+            <label class="form-label">Gönderen (Avukat Adı)</label>
+            <input type="text" class="form-input" id="mailGonderen" placeholder="Av. Ad Soyad">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hukuk Bürosu Adı</label>
+            <input type="text" class="form-input" id="mailBuro" placeholder="Ör: ABC Hukuk Bürosu">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Ek Notlar</div>
+        <div class="form-group">
+          <label class="form-label">Maile eklenmesini istediğiniz özel notlar</label>
+          <textarea class="form-textarea" id="mailEkNot" placeholder="Varsa özel durumları buraya yazınız..."></textarea>
+        </div>
+      </div>
+
+      <div class="mt-lg">
+        <button class="btn btn-primary btn-lg" onclick="generateEmail()" style="width: 100%;">Mail Taslağı Oluştur</button>
+      </div>
+
+      <div id="emailOutput" class="petition-output mt-xl hidden" style="background: var(--bg-secondary); max-height: 700px;"></div>
+
+      <div id="emailActions" class="hidden mt-md" style="display:flex; gap:var(--space-sm); justify-content:flex-end;">
+        <button class="btn btn-secondary btn-sm" onclick="copyEmail()">Kopyala</button>
+        <button class="btn btn-secondary btn-sm" onclick="printEmail()">Yazdır</button>
+      </div>
+
+      <div class="step-navigation">
+        <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
+        <button class="btn btn-success btn-lg" onclick="saveToStorage(); showToast('Dosya başarıyla kaydedildi.', 'success')">Dosyayı Kaydet ve Bitir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== İÇTİHAT KÜTÜPHANESİ MODALI ==================== -->
+<div class="modal-backdrop" id="ictihatModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">📚 Yargıtay Emsal Karar & İçtihat Kütüphanesi</div>
+      <button class="modal-close" onclick="closeIctihatModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="ictihat-search-bar">
+        <input type="text" class="form-input" id="ictihatSearchInput" placeholder="Karar veya konu ara (Ör: KTK 109, TRH-2010, SGK mahsubu, müterafik kusur)..." oninput="renderIctihatCards()">
+      </div>
+      <div class="ictihat-cat-bar mt-sm">
+        <button class="ictihat-cat-btn active" data-cat="tumu" onclick="filterIctihatLibrary('tumu')">Tümü</button>
+        <button class="ictihat-cat-btn" data-cat="zamanasimi" onclick="filterIctihatLibrary('zamanasimi')">Zamanaşımı</button>
+        <button class="ictihat-cat-btn" data-cat="aktuerya" onclick="filterIctihatLibrary('aktuerya')">Aktüerya & Tazminat</button>
+        <button class="ictihat-cat-btn" data-cat="kusur" onclick="filterIctihatLibrary('kusur')">Kusur</button>
+        <button class="ictihat-cat-btn" data-cat="maluliyet" onclick="filterIctihatLibrary('maluliyet')">Maluliyet</button>
+        <button class="ictihat-cat-btn" data-cat="police" onclick="filterIctihatLibrary('police')">Poliçe Limiti</button>
+        <button class="ictihat-cat-btn" data-cat="arabuluculuk" onclick="filterIctihatLibrary('arabuluculuk')">Usul & Arabuluculuk</button>
+      </div>
+      <div id="ictihatListContainer" class="mt-md"></div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
