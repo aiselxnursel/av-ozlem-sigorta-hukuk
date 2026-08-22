@@ -22,6 +22,7 @@
       </div>
     </div>
     <div class="header-actions">
+      <button class="btn btn-ghost btn-sm" onclick="openHandbookModal()" title="Sigorta Vekili El Kitabı ve Rehberler">📖 Vekil Rehberleri</button>
       <button class="btn btn-ghost btn-sm" onclick="openIctihatModal()" title="Emsal Karar Kütüphanesi">📚 İçtihat Kütüphanesi</button>
       <button class="btn btn-ghost btn-sm" onclick="saveToStorage()" title="Dosyayı Kaydet">Kaydet</button>
       <button class="btn btn-ghost btn-sm" onclick="loadFromStorage()" title="Kayıtlı Dosyayı Yükle">Yükle</button>
@@ -45,7 +46,7 @@
       </div>
       <div class="progress-step" data-step="3" onclick="goToStep(3)">
         <div class="progress-step-number">3</div>
-        <div class="progress-step-label">Olay Bilgisi</div>
+        <div class="progress-step-label">Olay & Kasko Bilgisi</div>
       </div>
       <div class="progress-step" data-step="4" onclick="goToStep(4)">
         <div class="progress-step-number">4</div>
@@ -57,7 +58,7 @@
       </div>
       <div class="progress-step" data-step="6" onclick="goToStep(6)">
         <div class="progress-step-number">6</div>
-        <div class="progress-step-label">Tazminat</div>
+        <div class="progress-step-label">Tazminat & Kasko Mahsupları</div>
       </div>
       <div class="progress-step" data-step="7" onclick="goToStep(7)">
         <div class="progress-step-number">7</div>
@@ -77,7 +78,7 @@
       </div>
       <div class="progress-step" data-step="11" onclick="goToStep(11)">
         <div class="progress-step-number">11</div>
-        <div class="progress-step-label">İcra Hesabı</div>
+        <div class="progress-step-label">İcra & İnfaz Yönetimi</div>
       </div>
       <div class="progress-step" data-step="12" onclick="goToStep(12)">
         <div class="progress-step-number">12</div>
@@ -92,8 +93,8 @@
       <div class="card-header">
         <div class="card-icon">I</div>
         <div>
-          <div class="card-title">Dosya Tanımlama</div>
-          <div class="card-subtitle">Dava ve poliçe bilgilerini giriniz</div>
+          <div class="card-title">Dosya & Branş Tanımlama</div>
+          <div class="card-subtitle">Dava, poliçe türü ve branş bilgilerini giriniz</div>
         </div>
       </div>
 
@@ -116,16 +117,27 @@
       </div>
 
       <div class="form-section">
-        <div class="form-section-title">Poliçe & Hasar Türü</div>
+        <div class="form-section-title">Poliçe Branşı & Hasar Türü</div>
         <div class="form-grid form-grid-3">
           <div class="form-group">
-            <label class="form-label">Poliçe Türü <span class="required">*</span></label>
-            <select class="form-select" id="policeTuru">
+            <label class="form-label">Poliçe Türü / Branş <span class="required">*</span></label>
+            <select class="form-select" id="policeTuru" onchange="onPoliceTuruChange()">
               <option value="">Seçiniz...</option>
-              <option value="zmss">Zorunlu Mali Mesuliyet (ZMSS/Trafik)</option>
-              <option value="kasko">Kasko</option>
-              <option value="imm">İhtiyari Mali Mesuliyet (İMM)</option>
-              <option value="kfk">Koltuk Ferdi Kaza (KFK)</option>
+              <optgroup label="Motorlu Araç & Trafik Branşları">
+                <option value="zmss">Zorunlu Mali Mesuliyet (ZMSS / Trafik)</option>
+                <option value="kasko">Kasko Sigortası (Genişletilmiş / Dar / Tam)</option>
+                <option value="imm">İhtiyari Mali Mesuliyet (İMM - Kasko İçi / Müstakil)</option>
+                <option value="kfk">Karayolu Taşımacılık Zorunlu Koltuk Ferdi Kaza (KFK)</option>
+              </optgroup>
+              <optgroup label="Sorumluluk & Ferdi Kaza Branşları">
+                <option value="isveren_sorumluluk">İşveren Sorumluluk Sigortası (İş Kazası & SGK Rücu)</option>
+                <option value="maden_fk">Maden Çalışanları Zorunlu Ferdi Kaza</option>
+                <option value="urun_mesleki">Ürün / Mesleki Sorumluluk Sigortası</option>
+              </optgroup>
+              <optgroup label="Yangın, Doğal Afet & Nakliyat Branşları">
+                <option value="isyeri_yangin">İşyeri & Yangın Paket Sigortası (Komşuluk/Kiracı Mali Sorumluluk)</option>
+                <option value="nakliyat_emtea">Nakliyat & Emtea Sigortası</option>
+              </optgroup>
             </select>
           </div>
           <div class="form-group">
@@ -294,6 +306,44 @@
           <div class="form-group">
             <label class="form-label">Poliçe Limiti (TL)</label>
             <input type="number" class="form-input" id="policeLimiti" placeholder="0,00" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Olay Neden / Kasko & Branş Türü</div>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Olay / Kaza Oluş Şekli</label>
+            <select class="form-select" id="kaskoOlayTuru">
+              <option value="">Seçiniz...</option>
+              <option value="carpma">Çarpma / Çarptırılma</option>
+              <option value="devrilme">Devrilme / Yuvarlanma / Düşme</option>
+              <option value="yanma">Yanma / Yangın Hasarı</option>
+              <option value="hirsizlik">Hırsızlık / Çalınma / Teşebbüs</option>
+              <option value="sel_su">Sel / Su Baskını / Doğal Afet</option>
+              <option value="tek_taraf">Tek Taraflı Kaza (Sürücü İhmali/Bariyer/Ağaç)</option>
+              <option value="cift_taraf">Çift Taraflı Trafik Kazası</option>
+              <option value="cam_kirilmasi">Cam Kırılması Hasarı</option>
+              <option value="anahtar_kaybi">Anahtar Çalınması / Kilit Değişimi</option>
+              <option value="yanlis_yakit">Yanlış Yakıt İkmali</option>
+              <option value="isveren_kaza">İş Kazası (İşveren Sorumluluk)</option>
+              <option value="maden_kaza">Maden Ocağı Kazası (Maden Ferdi Kaza)</option>
+              <option value="danisikli_kaza">Hileli / Danışıklı Kaza İddiası (Ekspertiz Şüphesi)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">İMM Teminatı Durumu</label>
+            <select class="form-select" id="immDurumu">
+              <option value="yok">İMM Teminatı Yok</option>
+              <option value="kasko_ici">Kasko İçi İMM Teminatı Mevcut</option>
+              <option value="mustakil">Müstakil İMM Poliçesi</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">İMM Teminat Limiti (TL)</label>
+            <input type="number" class="form-input" id="immLimiti" placeholder="0,00" step="0.01">
+            <span class="form-hint">ZMSS limitini aşan kısım için</span>
           </div>
         </div>
       </div>
@@ -616,6 +666,7 @@
       <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('maddiHasar', this)">Maddi Hasar</button>
         <button class="tab-btn" onclick="switchTab('bedeniHasar', this)">Bedeni Hasar</button>
+        <button class="tab-btn" onclick="switchTab('kaskoMahsup', this)">Kasko & Sovtaj Mahsupları</button>
         <button class="tab-btn" onclick="switchTab('aktuerya', this)">Aktüerya Parametreleri</button>
         <button class="tab-btn" onclick="switchTab('hesapItiraz', this)">İtiraz Noktaları</button>
       </div>
@@ -675,6 +726,70 @@
               <label class="form-label">Destekten Yoksun Kalma (TL)</label>
               <input type="number" class="form-input" id="destekTazminat" placeholder="0,00" step="0.01" oninput="calculateTotals()">
               <span class="form-hint">Ölümlü dosyalarda</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Kasko & Sovtaj Mahsupları -->
+      <div class="tab-content" id="tab-kaskoMahsup">
+        <div class="form-section">
+          <div class="form-section-title">Kasko Poliçesi Özel Mahsup & İskonto Kalemleri</div>
+          <div class="form-grid form-grid-3">
+            <div class="form-group">
+              <label class="form-label">Sovtaj (Hurda) Bedeli (TL)</label>
+              <input type="number" class="form-input" id="sovtajBedeli" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+              <span class="form-hint">Pert-total araçlarda sigortalıda kalan hurda değeri</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tenzili Muafiyet Tutarı (TL)</label>
+              <input type="number" class="form-input" id="tenziliMuafiyet" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+              <span class="form-hint">Poliçe muafiyet oranı/tutarı indirimi</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Eskime / Yıpranma İskontosu (TL)</label>
+              <input type="number" class="form-input" id="eskimeIskontosu" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+              <span class="form-hint">Eski ile yeni parça farkı indirimi</span>
+            </div>
+          </div>
+          <div class="form-grid form-grid-2 mt-md">
+            <div class="form-group">
+              <label class="form-label">Araç Rayiç Değeri (Piyasa) (TL)</label>
+              <input type="number" class="form-input" id="aracRayicBedeli" placeholder="0,00" step="0.01">
+              <span class="form-hint">Kaza tarihindeki emsal piyasa rayici</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Poliçe Sigorta Bedeli (Poliçede Yazan) (TL)</label>
+              <input type="number" class="form-input" id="policeSigortaBedeli" placeholder="0,00" step="0.01">
+              <span class="form-hint">TTK m. 1461 Eksik/Aşkın sigorta kontrolü için</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Kasko & Savunma Özel Şart İtirazları</div>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <div class="form-check">
+                <input type="checkbox" id="kEksikSigorta" value="eksik_sigorta">
+                <label for="kEksikSigorta">Eksik Sigorta Kuralı (TTK m. 1461) — Hasar bedelinden orantılı indirim yapılmalıdır</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="kBeyanIhlali" value="beyan_ihlali">
+                <label for="kBeyanIhlali">Beyan Yükümlülüğü İhlali (TTK m. 1435) — Yanlış / eksik beyan nedeniyle tazminattan indirim veya fesih</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="kRuhsatsizSuruci" value="ruhsatsiz">
+                <label for="kRuhsatsizSuruci">Sürücünün yetkisiz / ehliyetsiz / sınıf dışı olması (Teminat Dışı)</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="kAlkolUyusturucu" value="alkol_uyusturucu">
+                <label for="kAlkolUyusturucu">Alkollü / Uyuşturucu Etkisinde Araç Kullanımı (Teminat Dışı & İlliyet Bağı)</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="kKasitliKaza" value="kasit">
+                <label for="kKasitliKaza">Kasıtlı Kaza / Danışıklı Hasar / Hileli İhbar (Teminat Dışı)</label>
+              </div>
             </div>
           </div>
         </div>
@@ -1210,15 +1325,26 @@
       <div class="card-header">
         <div class="card-icon">&#9878;</div>
         <div>
-          <div class="card-title">İcra Kapak Hesabı</div>
-          <div class="card-subtitle">Ödeme tarihine göre otomatik icra kapak hesabı — harç, faiz ve vekalet otomatik hesaplanır</div>
+          <div class="card-title">İcra & İnfaz Yönetimi (İcra Analizcisi)</div>
+          <div class="card-subtitle">İcra kapak hesabı, faiz kontrolü, fazla ödeme iadesi (İİK m. 40), haciz fek ve dosya kapatma dilekçeleri</div>
         </div>
       </div>
 
-      <div class="alert alert-info">
-        <div class="alert-icon">i</div>
-        <div>Sistem, güncel mevzuata uygun harç oranlarını, yıllar içinde değişen faiz oranlarını ve AAÜT'ye göre icra vekalet ücretini <strong>otomatik olarak hesaplar</strong>. Siz yalnızca temel dosya bilgilerini giriniz.</div>
+      <!-- Step 11 Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('icraKapakTab', this)">İcra Kapak Hesabı</button>
+        <button class="tab-btn" onclick="switchTab('icraIadeTab', this)">Fazla Ödeme & İade (İİK 40)</button>
+        <button class="tab-btn" onclick="switchTab('hacizFekTab', this)">Haciz Fek Talepleri</button>
+        <button class="tab-btn" onclick="switchTab('infazStopajTab', this)">Stopaj/KDV & Dosya İnfaz</button>
+        <button class="tab-btn" onclick="switchTab('icraRiskTab', this)">İcra Hata & Risk Analizi</button>
       </div>
+
+      <!-- Tab 1: İcra Kapak Hesabı -->
+      <div class="tab-content active" id="tab-icraKapakTab">
+        <div class="alert alert-info">
+          <div class="alert-icon">i</div>
+          <div>Sistem, güncel mevzuata uygun harç oranlarını, yıllar içinde değişen faiz oranlarını ve AAÜT'ye göre icra vekalet ücretini <strong>otomatik olarak hesaplar</strong>. Siz yalnızca temel dosya bilgilerini giriniz.</div>
+        </div>
 
       <div class="form-section">
         <div class="form-section-title">Takip Bilgileri</div>
@@ -1358,6 +1484,110 @@
         <button class="btn btn-secondary btn-sm" onclick="copyIcraKapak()">Kopyala</button>
         <button class="btn btn-secondary btn-sm" onclick="printIcraKapak()">Yazdır</button>
       </div>
+      </div> <!-- End tab-icraKapakTab -->
+
+      <!-- Tab 2: Fazla Ödeme & İade (İİK m. 40 / Sebepsiz Zenginleşme) -->
+      <div class="tab-content" id="tab-icraIadeTab">
+        <div class="form-section">
+          <div class="form-section-title">Fazla Ödeme & İcra İadesi Talebi (İİK m. 40)</div>
+          <p class="form-hint">İstinaf/Temyiz bozması, mükerrer tahsilat veya hatalı icra hesabı nedeniyle alacaklı tarafa fazla ödenen tazminat ve masrafların icra müdürlüğü kanalıyla iadesi (muhtıra çıkartılması) talebidir.</p>
+          <div class="form-grid form-grid-2 mt-md">
+            <div class="form-group">
+              <label class="form-label">İade Gerekçesi</label>
+              <select class="form-select" id="iadeGerekcesi">
+                <option value="bozma">Mahkeme Kararının Bozularak Davanın Reddi/Düşürülmesi (İİK m. 40)</option>
+                <option value="mukerrer">Mükerrer Ödeme / Şirket Tarafından İcra Öncesi Ödeme Yapılmış Olması</option>
+                <option value="limit_asim">ZMSS Poliçe Limiti Üzerinde Hatalı Tahsilat Yapılması</option>
+                <option value="hesap_hatasi">İcra Müdürlüğü Tarafından Hatalı Kapak Hesabı Yapılması</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fazla Ödenen / İade İstenecek Tutar (TL)</label>
+              <input type="number" class="form-input" id="iadeTutar" placeholder="0,00" step="0.01">
+            </div>
+          </div>
+          <div class="mt-md">
+            <button class="btn btn-primary" onclick="generateIadeDilekcesi()">Fazla Ödeme İade Dilekçesi Oluştur (İİK m. 40)</button>
+          </div>
+          <div id="iadeDilekceOutput" class="petition-output mt-md hidden"></div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Haciz Fek Talepleri -->
+      <div class="tab-content" id="tab-hacizFekTab">
+        <div class="form-section">
+          <div class="form-section-title">Haciz Kaldırma (Fek) Talebi</div>
+          <p class="form-hint">Dosyaya yapılan ödeme veya teminat sonrasında müvekkil sigorta şirketinin banka hesapları, araçları veya gayrimenkulleri üzerindeki hacizlerin kaldırılması talebidir.</p>
+          <div class="form-grid form-grid-3 mt-md">
+            <div class="form-group">
+              <label class="form-label">Haciz Türü</label>
+              <select class="form-select" id="hacizFekTuru">
+                <option value="banka">89/1 Banka Haczi / Blokajı</option>
+                <option value="arac">Motorlu Araç Haczi</option>
+                <option value="tasinmaz">Gayrimenkul / Taşınmaz Haczi</option>
+                <option value="tum">Tüm Hacizler (Genel Haciz Fekki)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ödeme / Teminat Durumu</label>
+              <select class="form-select" id="fekDayanagi">
+                <option value="tam_odeme">Dosya Borcu Tamamen Ödenmiştir</option>
+                <option value="teminat">İcrayı Durdurma Teminatı (Teminat Mektubu/Nakit) Sunulmuştur</option>
+                <option value="haric">Alacaklı Vekili ile Haricen Anlaşılmıştır</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hacizli Banka / Plaka / Parsel Bilgisi</label>
+              <input type="text" class="form-input" id="hacizDetayBilgi" placeholder="Ör: Garanti Bankası A.Ş. / 34 ABC 123">
+            </div>
+          </div>
+          <div class="mt-md">
+            <button class="btn btn-primary" onclick="generateHacizFekDilekcesi()">Haciz Fek Dilekçesi Oluştur</button>
+          </div>
+          <div id="hacizFekOutput" class="petition-output mt-md hidden"></div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Stopaj/KDV & Dosya İnfaz (İşlemden Kaldırma) -->
+      <div class="tab-content" id="tab-infazStopajTab">
+        <div class="form-section">
+          <div class="form-section-title">Stopaj/KDV Beyanı & İnfaz Dosya Kapama Talebi</div>
+          <p class="form-hint">İcra dosyasına yapılan ödemelerde serbest meslek makbuzuna (SMM) ilişkin KDV ve Gelir Vergisi stopaj kesintisi beyan edilerek icra dosyasının infazen kapatılması talebidir.</p>
+          <div class="form-grid form-grid-3 mt-md">
+            <div class="form-group">
+              <label class="form-label">Karşı Vekalet Ücreti (TL)</label>
+              <input type="number" class="form-input" id="infazVekaletUcreti" placeholder="0,00" step="0.01">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hesaplanan Stopaj Kesintisi (%20) (TL)</label>
+              <input type="number" class="form-input" id="infazStopajTutar" placeholder="0,00" step="0.01" readonly>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Makbuz Kesildi mi?</label>
+              <select class="form-select" id="makbuzDurumu">
+                <option value="var">SMM E-Arşiv Makbuz Eklendi</option>
+                <option value="talep">Makbuz Karşılığı Ödeme İsteniyor</option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-md">
+            <button class="btn btn-primary" onclick="generateInfazDilekcesi()">İnfaz ve İşlemden Kaldırma Dilekçesi Oluştur</button>
+          </div>
+          <div id="infazDilekceOutput" class="petition-output mt-md hidden"></div>
+        </div>
+      </div>
+
+      <!-- Tab 5: İcra Hata & Risk Analiz Paneli -->
+      <div class="tab-content" id="tab-icraRiskTab">
+        <div class="form-section">
+          <div class="form-section-title">İcra Müdürlüğü Hata & Risk Analiz Paneli</div>
+          <p class="form-hint">İcra takiplerinde sıklıkla karşılaşılan usul, faiz, harç ve poliçe limiti hatalarının tespiti ve risk analizi.</p>
+          <div class="mt-md">
+            <button class="btn btn-gold" onclick="runIcraRiskAnalizi()">İcra Risk ve Hata Analizini Çalıştır</button>
+          </div>
+          <div id="icraRiskOutput" class="mt-md hidden"></div>
+        </div>
+      </div>
 
       <div class="step-navigation">
         <button class="btn btn-secondary" onclick="prevStep()">← Geri</button>
@@ -1481,6 +1711,27 @@
   </div>
 </div>
 
+<!-- ==================== SİGORTA VEKİLİ EL KİTABI MODALI ==================== -->
+<div class="modal-backdrop" id="handbookModal">
+  <div class="modal-content modal-lg">
+    <div class="modal-header">
+      <div class="modal-title">📖 Sigorta Şirketi Vekili El Kitabı & Rehberler</div>
+      <button class="modal-close" onclick="closeHandbookModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="ictihat-cat-bar">
+        <button class="ictihat-cat-btn active" data-hbcat="kasko" onclick="filterHandbook('kasko')">Kasko Rehberi</button>
+        <button class="ictihat-cat-btn" data-hbcat="isveren" onclick="filterHandbook('isveren')">İşveren Sorumluluk</button>
+        <button class="ictihat-cat-btn" data-hbcat="maden" onclick="filterHandbook('maden')">Maden & Koltuk FK</button>
+        <button class="ictihat-cat-btn" data-hbcat="sovtaj" onclick="filterHandbook('sovtaj')">Sovtaj & Muafiyet</button>
+        <button class="ictihat-cat-btn" data-hbcat="icra" onclick="filterHandbook('icra')">İcra Risk Rehberi</button>
+      </div>
+      <div id="handbookContentContainer" class="mt-md"></div>
+    </div>
+  </div>
+</div>
+
 <script src="app.js"></script>
 </body>
 </html>
+

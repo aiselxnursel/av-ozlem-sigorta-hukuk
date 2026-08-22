@@ -750,6 +750,41 @@ function generatePetition() {
     p += '\n';
   }
 
+
+  // ──── KASKO & BRANŞ ÖZEL SAVUNMALARI ────
+  if (d.policeTuru === 'kasko') {
+    p += `<h3>KASKO POLİÇESİ ÖZEL DEF'İ VE İTİRAZLARIMIZ</h3>\n`;
+    if (document.getElementById('kEksikSigorta')?.checked) {
+      p += `<p><strong>1. Eksik Sigorta İndirimi (TTK m. 1461):</strong> Poliçede kayıtlı sigorta bedeli, kaza tarihindeki araç emsal piyasa değerinden düşüktür. TTK m. 1461 uyarınca, sigorta bedeli ile sigorta değeri arasındaki orantı kurulmak suretiyle tazminat miktarından orantılı indirim yapılması yasal zorunluluktur.</p>\n`;
+    }
+    if (document.getElementById('kBeyanIhlali')?.checked) {
+      p += `<p><strong>2. Beyan Yükümlülüğü İhlali (TTK m. 1435):</strong> Sigortalı kaza öncesinde veya ihbar esnasında eksik/yanlış beyanda bulunmuştur. TTK m. 1435 gereğince tazminattan indirim veya fesih hakkımız saklıdır.</p>\n`;
+    }
+    const sovtaj = parseFloat(document.getElementById('sovtajBedeli')?.value || 0);
+    if (sovtaj > 0) {
+      p += `<p><strong>3. Sovtaj (Hurda) Bedeli Mahsubu:</strong> Pert-total olarak nitelendirilen araçta, davacı sigortalıda kalan sovtaj (hurda) bedeli olan <strong>${formatCurrency(sovtaj)}</strong> tutarının toplam tazminattan mahsubu zorunludur.</p>\n`;
+    }
+    const tenzili = parseFloat(document.getElementById('tenziliMuafiyet')?.value || 0);
+    if (tenzili > 0) {
+      p += `<p><strong>4. Tenzili Muafiyet İndirimi:</strong> Kasko poliçesi özel şartları uyarınca her bir hasarda uygulanan <strong>${formatCurrency(tenzili)}</strong> muafiyet tutarının tazminattan düşülmesi gerekmektedir.</p>\n`;
+    }
+    const eskime = parseFloat(document.getElementById('eskimeIskontosu')?.value || 0);
+    if (eskime > 0) {
+      p += `<p><strong>5. Eski ile Yeni Farkı (Yıpranma İskontosu):</strong> Onarımda kullanılan yeni parçalar nedeniyle araçta meydana gelen değer artışına karşılık <strong>${formatCurrency(eskime)}</strong> tutarındaki eskime payı mahsup edilmelidir.</p>\n`;
+    }
+    p += `\n`;
+  } else if (d.policeTuru === 'imm') {
+    p += `<h3>İMM (İHTİYARİ MALİ MESULİYET) POLİÇESİ SAVUNMASI</h3>\n`;
+    p += `<p>Yargıtay 17. Hukuk Dairesi'nin yerleşik içtihatları uyarınca; zarar gören 3. şahıs öncelikle ZMSS (Zorunlu Trafik) poliçe limitini tamamen tüketmek zorundadır. ZMSS poliçe limiti tüketilmeden veya ZMSS sigortacısının sorumluluğu sınırına ulaşılmadan İMM sigortacısından tazminat talep edilemez. Müvekkil şirketin İMM teminatı ancak ZMSS limitini aşan kısım için ve poliçedeki azami İMM limiti dahilinde devreye girer.</p>\n\n`;
+  } else if (d.policeTuru === 'isveren_sorumluluk') {
+    p += `<h3>İŞVEREN SORUMLULUK SİGORTASI ÖZEL SAVUNMASI</h3>\n`;
+    p += `<p><strong>1. 5510 Sayılı Kanun m. 21 SGK Mahsubu:</strong> İş kazası neticesinde SGK tarafından davacıya / hak sahiplerine bağlanan gelirlerin ve yapılan ödemelerin peşin sermaye değerinin işverenin kusur oranına düşen kısımdan mahsubu zorunludur.</p>\n`;
+    p += `<p><strong>2. Kaçınılmazlık İlkesi ve İşçinin Ağır Kusuru:</strong> Kaza iş sağlığı kurallarına uyulmasına rağmen kaçınılmazlık nedeniyle gerçekleşmiş olup işverene tam kusur atfedilemez. İşçinin kendi emniyet kurallarını ihlal eden ağır kusuru TBK m. 52 kapsamında tenzil edilmelidir.</p>\n\n`;
+  } else if (d.policeTuru === 'maden_fk' || d.policeTuru === 'kfk') {
+    p += `<h3>ZORUNLU FERDİ KAZA POLİÇESİ SAVUNMASI</h3>\n`;
+    p += `<p>Ferdi Kaza Sigortası Genel Şartları uyarınca sakatlık ve ölüm teminatı maktu nitelikte olup sakatlık derecesi oranında ödenir. Teminat üst sınırını aşan veya teminat dışı kalan taleplerin reddi gerekir.</p>\n\n`;
+  }
+
   // ──── HESAPLAMA İTİRAZI ────
   if (document.getElementById('sHesaplama').checked) {
     const h = ICTIHAT.hesaplama_trh2010;
@@ -1463,6 +1498,264 @@ function resetForm() {
   ['sZamanasimi','sArabuluculuk','sDavaDegeri','sKusur','sPoliceLimit','sOncekiOdeme','sHesaplama','sFaiz'].forEach(id => { const el = document.getElementById(id); if (el) el.checked = true; });
   updateKusur(); calculateTotals(); goToStep(1);
   showToast('Form sıfırlandı.', 'success');
+}
+
+
+
+// ===================== SİGORTA VEKİLİ EL KİTABI & REHBERLER =====================
+const HANDBOOK_DATA = {
+  kasko: [
+    {
+      title: "Kasko Sigortası Genel Şartları & Temel Esaslar",
+      badge: "Kasko Hukuku",
+      content: `
+        <p><strong>1. Teminat Türleri:</strong> Kasko poliçeleri Dar, Kasko, Genişletilmiş ve Tam Kasko olmak üzere 4 ana gruba ayrılır. Çarpma, çarptırılma, devrilme, yanma ve çalınma temel teminatlardır.</p>
+        <p><strong>2. Eksik Sigorta (TTK m. 1461):</strong> Poliçede yazılı sigorta bedeli, kaza tarihindeki gerçek sigorta değerinden az ise eksik sigorta mevcuttur. Hasar tazminatı <code>(Sigorta Bedeli / Sigorta Değeri) * Hasar Tutarı</code> formülü ile orantılı indirime tabi tutulur.</p>
+        <p><strong>3. Beyan Yükümlülüğü İhlali (TTK m. 1435 - 1444):</strong> Sözleşme yapılırken veya riziko gerçekleştiğinde sigortalı tarafından kasten veya ihmalen yalan beyanda bulunulması halinde sigortacı tazminattan indirim yapabilir veya sözleşmeden cayabilir.</p>
+        <p><strong>4. Sovtaj (Hurda) Mahsubu:</strong> Pert-total kabul edilen araçlarda sigortalı aracı hurda haliyle teslim almayı tercih ederse, sovtaj (ihale/piyasa hurda) bedeli toplam araç rayicinden düşülür.</p>
+        <p><strong>5. Alkollü Kullanım Yargıtay HGK Kararları:</strong> Yargıtay Hukuk Genel Kurulu'nun yerleşik içtihatlarına göre sırf alkollü olmak kaskoda tazminatı reddetmek için yeterli değildir. Kazanın münhasıran (sırf) alkolün etkisiyle gerçekleştiğinin ve illiyet bağının sigortacı tarafından ispatlanması gerekir.</p>
+      `
+    },
+    {
+      title: "İMM (İhtiyari Mali Mesuliyet) Poliçesi Savunma Rehberi",
+      badge: "İMM Hukuku",
+      content: `
+        <p><strong>1. ZMSS Limitinin Önceliği İlkesi:</strong> Zarar gören 3. şahıs öncelikle ZMSS (Zorunlu Trafik) poliçe limitini tüketmek zorundadır. ZMSS limiti tüketilmeden İMM sigortacısına başvurulamaz (Yargıtay 17. HD).</p>
+        <p><strong>2. Kasko İçi İMM vs Müstakil İMM:</strong> Kasko poliçesinde ek teminat olarak yer alan İMM teminatı ile müstakil İMM poliçesi aynı hükümlere tabidir. Poliçedeki şahıs başı / kaza başı İMM limiti aşılamaz.</p>
+        <p><strong>3. Manevi Tazminat Kapsamı:</strong> İMM poliçesinde manevi tazminat teminatı açıkça poliçede yazılı ve primi ödenmişse teminat altındadır. Aksi halde İMM'den manevi tazminat istenemez.</p>
+      `
+    }
+  ],
+  isveren: [
+    {
+      title: "İşveren Sorumluluk Sigortası & SGK Rücu Rehberi",
+      badge: "İş Hukuku & SGK",
+      content: `
+        <p><strong>1. Teminat Kapsamı:</strong> İşyerinde meydana gelen iş kazaları ve meslek hastalıkları nedeniyle işverene terettüp eden hukuki sorumlulukları teminat altına alır.</p>
+        <p><strong>2. 5510 Sayılı Kanun m. 21 SGK Peşin Sermaye Değeri Mahsubu:</strong> SGK tarafından iş kazası geçiren işçiye veya hak sahiplerine bağlanan gelirlerin peşin sermaye değeri, işverenin kusuru oranında tazminattan düşülür.</p>
+        <p><strong>3. İşverenin Ağır Kusuru veya Kasten Sebebiyeti:</strong> İşverenin iş sağlığı ve güvenliği önlemlerini almaması neticesinde ağır kusurlu olması durumunda poliçedeki muafiyet ve rücu şartları incelenmelidir.</p>
+        <p><strong>4. Kaçınılmazlık İlkesi:</strong> İş kazasının gelişen teknolojiye rağmen önlenemez nitelikte olması (kaçınılmazlık) durumunda kusur dağılımı %50-%50 veya orantılı bölünür, işverene %100 kusur yüklenemez.</p>
+      `
+    }
+  ],
+  maden: [
+    {
+      title: "Maden Ferdi Kaza ve Koltuk Ferdi Kaza Rehberi",
+      badge: "Özel Branşlar",
+      content: `
+        <p><strong>1. Zorunlu Maden Çalışanları Ferdi Kaza Sigortası:</strong> Yeraltı ve yerüstü madencilik faaliyetlerinde çalışanların uğradığı kazalarda maktu (sabit) sakatlık ve ölüm teminatı ödenir.</p>
+        <p><strong>2. Koltuk Ferdi Kaza Sigortası (KFK):</strong> Karayolu şehirlerarası veya uluslararası yolcu taşımacılığında otobüs/araç içindeki yolcuların kaza sonucu ölümü veya sakatlığı halinde teminat ödenir.</p>
+        <p><strong>3. Kesinti Yapılamazlık ve Teminat Maktu Yapısı:</strong> Ferdi kaza sigortaları meblağ sigortası niteliğinde olduğundan, sakatlık derecesi oranında doğrudan poliçe teminatı ödenir; SGK ödemeleri sakatlık teminatından düşülemez (kusursuz teminat).</p>
+      `
+    }
+  ],
+  sovtaj: [
+    {
+      title: "Sovtaj, Muafiyet & Eksik Sigorta Hesaplama Rehberi",
+      badge: "Aktüerya & Hesap",
+      content: `
+        <p><strong>1. Sovtaj Bedeli Tespiti:</strong> Hasarlı aracın ihale usulü veya ekspertiz kanalıyla belirlenen hurda piyasa değeridir. Hak sahibine araç hurdasının bırakılması halinde sovtaj bedeli tazminattan düşülür.</p>
+        <p><strong>2. Tenzili Muafiyet (Deductible):</strong> Sigortalının her bir hasarda üstlenmeyi taahhüt ettiği maktu veya oransal (ör %2 veya 5.000 TL) muafiyet tutarı tazminat ödemesinden doğrudan mahsup edilir.</p>
+        <p><strong>3. Eski ile Yeni Farkı (Yıpranma / Iskonto):</strong> Hasar gören aracın yaşı ve yıpranma durumu göz önüne alınarak yeni yedek parça takılması halinde oluşan değer artışı (eskime iskontosu) tazminattan düşülür.</p>
+      `
+    }
+  ],
+  icra: [
+    {
+      title: "İcra Risk, Hata Analizcisi & Operasyonel Rehber",
+      badge: "İcra & İnfaz",
+      content: `
+        <p><strong>1. Mükerrer Takip Riski:</strong> Hem mahkeme davası devam ederken hem icra takibi başlatılması veya çifte icra takibi açılması durumunda derhal DERHAT İTİRAZ ve mükerrerlik def'i sunulmalıdır.</p>
+        <p><strong>2. Poliçe Limiti Aşan İcra Emri:</strong> İcra müdürlüğü takibe geçerken poliçe limitini aşan meblağ için sigorta şirketine icra emri gönderemez. Hatalı icra emrine karşı İcra Hukuk Mahkemesi'nde 7 gün içinde ŞİKAYET yoluna gidilmelidir (İİK m. 16).</p>
+        <p><strong>3. Hatalı Faiz Başlangıcı ve Oranı:</strong> Sigorta şirketinin temerrüdü başvuru + 8 iş günü veya dava tarihidir. Olay tarihinden itibaren ticari faiz istenmesi halinde icra takibine kısmi itiraz sunulmalıdır.</p>
+        <p><strong>4. İİK m. 40 İcranın İadesi:</strong> Üst mahkemece kararın bozulması halinde ödenmiş olan para alacaklıdan icra müdürlüğü muhtırası ile tahsil edilerek sigorta şirketine iade ettirilir.</p>
+      `
+    }
+  ]
+};
+
+let currentHandbookCat = 'kasko';
+
+function openHandbookModal() {
+  document.getElementById('handbookModal').classList.add('active');
+  renderHandbookContent('kasko');
+}
+
+function closeHandbookModal() {
+  document.getElementById('handbookModal').classList.remove('active');
+}
+
+function filterHandbook(cat) {
+  currentHandbookCat = cat;
+  document.querySelectorAll('#handbookModal .ictihat-cat-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-hbcat') === cat);
+  });
+  renderHandbookContent(cat);
+}
+
+function renderHandbookContent(cat) {
+  const container = document.getElementById('handbookContentContainer');
+  const items = HANDBOOK_DATA[cat] || [];
+  let html = '';
+  items.forEach(item => {
+    html += `
+      <div class="ictihat-card">
+        <div class="ictihat-card-header">
+          <span class="ictihat-tag">${item.badge}</span>
+          <h4 style="margin:8px 0; color:var(--gold);">${item.title}</h4>
+        </div>
+        <div class="ictihat-card-body" style="font-size:0.95rem; line-height:1.6;">
+          ${item.content}
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+// ===================== İCRA İADE DİLEKÇESİ (İİK m. 40) =====================
+function generateIadeDilekcesi() {
+  const d = getFormData();
+  const icraMudurlugu = document.getElementById('icraMudurlugu')?.value || '… İCRA MÜDÜRLÜĞÜ';
+  const icraDosyaNo = document.getElementById('icraDosyaNo')?.value || '…/… E.';
+  const iadeGerekcesi = document.getElementById('iadeGerekcesi')?.value;
+  const iadeTutar = parseFloat(document.getElementById('iadeTutar')?.value || 0);
+
+  let p = `<h3>${icraMudurlugu.toUpperCase()}'NE</h3>\n\n`;
+  p += `<p><strong>Dosya No:</strong> ${icraDosyaNo}<br><strong>Borçlu (İade İsteyen):</strong> ${d.sigortaSirketi || '… Sigorta A.Ş.'} <strong>Vekili:</strong> ${d.davaliVekil || 'Av. …'}<br><strong>Alacaklı:</strong> ${document.getElementById('icraAlacakli')?.value || '…'}<br><strong>Konu:</strong> İİK m. 40 uyarınca alacaklı tarafa rızaen/cebren ödenen fuzuli tutarın iadesi için muhtıra çıkarılması talebimizdir.</p>\n\n`;
+  p += `<h3>AÇIKLAMALAR</h3>\n`;
+  p += `<p>1. Yukarıda esas numarası yazılı müdürlüğünüz dosyasından borçlu müvekkil sigorta şirketi tarafından alacaklı tarafa <strong>${formatCurrency(iadeTutar)}</strong> tutarında ödeme yapılmıştır / tahsilat gerçekleştirilmiştir.</p>\n`;
+
+  if (iadeGerekcesi === 'bozma') {
+    p += `<p>2. İcra takibine dayanak mahkeme ilamı, üst mahkeme (Bölge Adliye Mahkemesi / Yargıtay) tarafından <strong>BOZULARAK</strong> davanın reddine / kararın kaldırılmasına karar verilmiştir. İİK m. 40 uyarınca, <em>"Bir ilamın bölge adliye mahkemesince kaldırılması veya Yargıtayca bozulması icra muamelelerini olduğu yerde durdurur... Karar kesinleştiğinde alacaklıya ödenen para borçluya iade olunur."</em></p>\n`;
+  } else if (iadeGerekcesi === 'mukerrer') {
+    p += `<p>2. Müvekkil sigorta şirketi tarafından takip öncesinde/esnasında mükerrer olarak yapılmış olan ödeme nedeniyle dosyaya fuzuli tahsilat yapılmıştır.</p>\n`;
+  } else if (iadeGerekcesi === 'limit_asim') {
+    p += `<p>2. Borçlu müvekkil sigorta şirketinin sorumluluğu ZMSS poliçe limiti ile sınırlı olmasına rağmen icra müdürlüğünce poliçe limiti üzerinde hatalı tahsilat yapılmıştır.</p>\n`;
+  } else {
+    p += `<p>2. Müdürlüğünüzce yapılan kapak hesabındaki hata neticesinde alacaklı tarafa fazla ödeme yapıldığı tespit edilmiştir.</p>\n`;
+  }
+
+  p += `<p>3. Yukarıda açıklanan nedenlerle, borçlu müvekkil şirkete iadesi gereken <strong>${formatCurrency(iadeTutar)}</strong> tutarın iadesi için alacaklı tarafa 7 günlük iade muhtırası çıkarılmasını saygılarımla arz ve talep ederim.</p>\n\n`;
+  p += `<p style="text-align: right;"><strong>Borçlu Sigorta Şirketi Vekili</strong><br>${d.davaliVekil || 'Av. …'}</p>`;
+
+  const out = document.getElementById('iadeDilekceOutput');
+  out.innerHTML = p;
+  out.classList.remove('hidden');
+  showToast('Fazla Ödeme İade Dilekçesi oluşturuldu.', 'success');
+}
+
+// ===================== HACİZ FEK DİLEKÇESİ =====================
+function generateHacizFekDilekcesi() {
+  const d = getFormData();
+  const icraMudurlugu = document.getElementById('icraMudurlugu')?.value || '… İCRA MÜDÜRLÜĞÜ';
+  const icraDosyaNo = document.getElementById('icraDosyaNo')?.value || '…/… E.';
+  const hacizFekTuru = document.getElementById('hacizFekTuru')?.value;
+  const fekDayanagi = document.getElementById('fekDayanagi')?.value;
+  const hacizDetayBilgi = document.getElementById('hacizDetayBilgi')?.value || '…';
+
+  let p = `<h3>${icraMudurlugu.toUpperCase()}'NE</h3>\n\n`;
+  p += `<p><strong>Dosya No:</strong> ${icraDosyaNo}<br><strong>Borçlu:</strong> ${d.sigortaSirketi || '… Sigorta A.Ş.'} <strong>Vekili:</strong> ${d.davaliVekil || 'Av. …'}<br><strong>Konu:</strong> Borçlu müvekkil şirket üzerindeki hacizlerin fekki (kaldırılması) talebidir.</p>\n\n`;
+  p += `<h3>AÇIKLAMALAR</h3>\n`;
+  p += `<p>Müdürlüğünüz dosyasından borçlu müvekkil sigorta şirketi aleyhine uygulanmış olan hacizlerin kaldırılması gerekmektedir.</p>\n`;
+
+  if (fekDayanagi === 'tam_odeme') {
+    p += `<p>1. Müdürlüğünüz icra dosyası kapsamındaki kapak borcunun tamamı <strong>bakiye borç kalmaksızın ödenmiş ve dosya infazen kapatılmıştır</strong>.</p>\n`;
+  } else if (fekDayanagi === 'teminat') {
+    p += `<p>1. Kararın tehiri icra (tehir-i icra / icrayı durdurma) kararı getirilmesi amacıyla dosya borcunun tamamını karşılar miktarda <strong>kesin banka teminat mektubu / nakit teminat</strong> müdürlüğünüz dosyasına sunulmuştur.</p>\n`;
+  } else {
+    p += `<p>1. Alacaklı taraf vekili ile haricen anlaşılmış olup haricen tahsil beyanında bulunulmuştur.</p>\n`;
+  }
+
+  if (hacizFekTuru === 'banka') {
+    p += `<p>2. Müvekkil şirketin hak sahibi olduğu banka hesaplarına konulan <strong>89/1 hacizlerinin ve blokajların derhal fekkine</strong>, ilgili bankalara haciz fek yazısı yazılmasına karar verilmesini talep ederiz. (İlgili Banka: ${hacizDetayBilgi})</p>\n`;
+  } else if (hacizFekTuru === 'arac') {
+    p += `<p>2. Müvekkil şirket adına kayıtlı <strong>${hacizDetayBilgi}</strong> plakalı motorlu araç üzerindeki haczin UYAP / EGM sistemi üzerinden fekkine karar verilmesini talep ederiz.</p>\n`;
+  } else if (hacizFekTuru === 'tasinmaz') {
+    p += `<p>2. Müvekkil şirket adına kayıtlı <strong>${hacizDetayBilgi}</strong> taşınmaz üzerindeki haczin ilgili Tapu Müdürlüğü'ne fek yazısı yazılarak kaldırılmasına karar verilmesini talep ederiz.</p>\n`;
+  } else {
+    p += `<p>2. Müvekkil şirket aleyhine konulmuş tüm banka, araç, taşınmaz ve 3. şahıs hacizlerinin <strong>tamamen FEKKİNE</strong> karar verilmesini saygıyla arz ve talep ederiz.</p>\n`;
+  }
+
+  p += `<p style="text-align: right;"><strong>Borçlu Sigorta Şirketi Vekili</strong><br>${d.davaliVekil || 'Av. …'}</p>`;
+
+  const out = document.getElementById('hacizFekOutput');
+  out.innerHTML = p;
+  out.classList.remove('hidden');
+  showToast('Haciz Fek Dilekçesi oluşturuldu.', 'success');
+}
+
+// ===================== STOPAJ / KDV & İNFAZ DİLEKÇESİ =====================
+function generateInfazDilekcesi() {
+  const d = getFormData();
+  const icraMudurlugu = document.getElementById('icraMudurlugu')?.value || '… İCRA MÜDÜRLÜĞÜ';
+  const icraDosyaNo = document.getElementById('icraDosyaNo')?.value || '…/… E.';
+  const vekalet = parseFloat(document.getElementById('infazVekaletUcreti')?.value || 0);
+  const stopaj = vekalet * 0.20;
+  document.getElementById('infazStopajTutar').value = stopaj.toFixed(2);
+
+  let p = `<h3>${icraMudurlugu.toUpperCase()}'NE</h3>\n\n`;
+  p += `<p><strong>Dosya No:</strong> ${icraDosyaNo}<br><strong>Borçlu:</strong> ${d.sigortaSirketi || '… Sigorta A.Ş.'} <strong>Vekili:</strong> ${d.davaliVekil || 'Av. …'}<br><strong>Konu:</strong> Vekalet ücreti Gelir Vergisi Stopajı (%20) beyanı, ödeme dekontu ve dosyanın İNFAZEN KAPATILMASI talebidir.</p>\n\n`;
+  p += `<h3>AÇIKLAMALAR</h3>\n`;
+  p += `<p>1. Yukarıda esas numarası yazılı dosyanız borcunun tamamı müvekkil sigorta şirketi tarafından müdürlüğünüz hesabına ödenmiştir.</p>\n`;
+  p += `<p>2. GVK m. 94 ve Vergi Usul Kanunu genel tebliğleri uyarınca; kurumlar vergisi mükellefi olan borçlu sigorta şirketi tarafından alacaklı vekiline ödenen icra vekalet ücreti üzerinden <strong>%20 oranında (${formatCurrency(stopaj)}) Gelir Vergisi Stopaj Kesintisi</strong> yapılarak vergi dairesine yatırılacaktır.</p>\n`;
+  p += `<p>3. Dosya borcu tamamen tasfiye edilmiş olduğundan, dosyanın <strong>İNFAZEN KAPATILMASINA</strong> ve işlemden kaldırılmasına karar verilmesini saygıyla talep ederiz.</p>\n\n`;
+  p += `<p style="text-align: right;"><strong>Borçlu Sigorta Şirketi Vekili</strong><br>${d.davaliVekil || 'Av. …'}</p>`;
+
+  const out = document.getElementById('infazDilekceOutput');
+  out.innerHTML = p;
+  out.classList.remove('hidden');
+  showToast('İnfaz ve Stopaj Dilekçesi oluşturuldu.', 'success');
+}
+
+// ===================== İCRA RİSK & HATA ANALİZİ =====================
+function runIcraRiskAnalizi() {
+  const d = getFormData();
+  const policeLimiti = parseFloat(d.policeLimiti || 0);
+  const icraAnapara = parseFloat(document.getElementById('icraAnapara')?.value || 0);
+  const faizBaslangic = document.getElementById('icraFaizBaslangic')?.value;
+  const kazaTarihi = d.kazaTarihi;
+  const faizTuru = document.getElementById('icraFaizTuru')?.value;
+
+  let risks = [];
+
+  if (policeLimiti > 0 && icraAnapara > policeLimiti) {
+    risks.push({
+      level: 'danger',
+      title: 'ZMSS POLİÇE LİMİTİ AŞIMI RİSKİ',
+      text: `İcra takibindeki anapara alacağı (${formatCurrency(icraAnapara)}), poliçe teminat limitini (${formatCurrency(policeLimiti)}) aşmaktadır. Sigorta şirketinin sorumluluğu limiti aşamaz. Derhal icra takibine ve icra emrine limit yönünden itiraz/şikayet edilmelidir.`
+    });
+  }
+
+  if (faizBaslangic && kazaTarihi && faizBaslangic === kazaTarihi && d.policeTuru === 'zmss') {
+    risks.push({
+      level: 'warning',
+      title: 'HATALI FAİZ BAŞLANGIÇ TARİHİ RİSKİ',
+      text: `Alacaklı taraf faizi kaza tarihinden itibaren başlatmıştır. ZMSS sigortacısının temerrüdü KTK m. 98 uyarınca başvuru + 8 iş günü süresinin dolmasıyla doğar. Dava/başvuru öncesi döneme faiz yürütülmesine itiraz edilmelidir.`
+    });
+  }
+
+  if (faizTuru === 'avans' && d.policeTuru === 'zmss' && d.hasarTuru === 'bedeni') {
+    risks.push({
+      level: 'warning',
+      title: 'FAİZ TÜRÜ İTİRAZI (YASAL vs AVANS)',
+      text: `Bedeni hasarlarda ve şahıs kazalarında avans (ticari) faizi istenemez; yasal faiz uygulanmalıdır. İcra takibindeki faiz türüne itiraz edilmelidir.`
+    });
+  }
+
+  let html = `<div class="report-section-title">İCRA MÜDÜRLÜĞÜ HATA VE RİSK ANALİZ RAPORU</div>`;
+  if (risks.length === 0) {
+    html += `<div class="alert alert-success"><div class="alert-icon">✓</div><div>İcra dosya parametrelerinde kritik bir usul veya poliçe limiti hatası tespit edilmedi. Dosya rutin takibe uygundur.</div></div>`;
+  } else {
+    risks.forEach(r => {
+      html += `<div class="alert alert-${r.level}"><div class="alert-icon">!</div><div><strong>${r.title}:</strong><br>${r.text}</div></div>`;
+    });
+  }
+
+  const out = document.getElementById('icraRiskOutput');
+  out.innerHTML = html;
+  out.classList.remove('hidden');
+  showToast('İcra risk ve hata analizi tamamlandı.', 'success');
 }
 
 // ===================== TOAST =====================
