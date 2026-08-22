@@ -22,6 +22,7 @@
       </div>
     </div>
     <div class="header-actions">
+      <button class="btn btn-gold btn-sm" onclick="openAiChatModal()" title="Sigorta Hukuk Yapay Zekâ Asistanı">🤖 AI Hukuk Asistanı</button>
       <button class="btn btn-ghost btn-sm" onclick="openAcademyModal()" title="Sigorta Hukuku Akademisi ve Doktrin Kürsüsü">🎓 Akademi & Doktrin</button>
       <button class="btn btn-ghost btn-sm" onclick="openHandbookModal()" title="Sigorta Vekili El Kitabı ve Rehberler">📖 Vekil Rehberleri</button>
       <button class="btn btn-ghost btn-sm" onclick="openIctihatModal()" title="Emsal Karar Kütüphanesi">📚 İçtihat Kütüphanesi</button>
@@ -1803,8 +1804,55 @@
   </div>
 </div>
 
+<!-- ==================== FLOATING AI ACTION BUTTON ==================== -->
+<div class="ai-fab" onclick="openAiChatModal()" title="Sigorta Hukuk Yapay Zekâ Asistanı">
+  <span class="ai-fab-icon">🤖</span>
+  <span class="ai-fab-text">AI Asistan</span>
+</div>
+
+<!-- ==================== YAPAY ZEKÂ HUKUK ASİSTANI MODALI ==================== -->
+<div class="modal-backdrop" id="aiChatModal">
+  <div class="modal-content modal-lg" style="max-width: 950px; height: 85vh; display: flex; flex-direction: column;">
+    <div class="modal-header">
+      <div class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 1.3rem;">🤖</span>
+        <div>
+          <div style="font-size: 1.1rem; font-weight: 700; color: var(--gold);">Sigorta Hukuku Yapay Zekâ Asistanı</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">Sigorta Şirketi Vekilliği İçin Akıllı Hukuk & Aktüerya Danışmanı</div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button class="btn btn-ghost btn-sm" onclick="clearAiChat()" title="Sohbet Geçmişini Temizle">Sıfırla</button>
+        <button class="modal-close" onclick="closeAiChatModal()">&times;</button>
+      </div>
+    </div>
+    <div class="modal-body" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0;">
+      <!-- Quick Prompts Bar -->
+      <div class="ai-quick-prompts">
+        <button class="ai-prompt-chip" onclick="sendQuickPrompt('Aktif dosyamın zamanaşımı ve mali risk analizini yap')">📊 Aktif Dosya Risk Analizi</button>
+        <button class="ai-prompt-chip" onclick="sendQuickPrompt('Kasko poliçesinde alkollü sürüş ve Yargıtay illiyet bağı ilkesi nedir?')">🍺 Kaskoda Alkol & İlliyet Bağı</button>
+        <button class="ai-prompt-chip" onclick="sendQuickPrompt('Destekten yoksun kalma tazminatında destek payları ve eşin evlenme indirimi nasıl hesaplanır?')">👑 DYK Payları & Evlenme İndirimi</button>
+        <button class="ai-prompt-chip" onclick="sendQuickPrompt('İcra dosyasından fazla ödeme iadesi (İİK 40) ve haciz fekki nasıl istenir?')">⚖️ İcra İadesi & Haciz Fekki</button>
+        <button class="ai-prompt-chip" onclick="sendQuickPrompt('Tazminat ilkesi ve zenginleşme yasağı nedir?')">🏛️ Tazminat İlkesi</button>
+      </div>
+
+      <!-- Messages Area -->
+      <div class="ai-chat-messages" id="aiChatMessages">
+        <!-- Message bubbles dynamically rendered -->
+      </div>
+
+      <!-- Input Bar -->
+      <div class="ai-chat-input-container">
+        <input type="text" class="form-input ai-chat-input" id="aiChatInput" placeholder="Sigorta hukuku, poliçe savunması, içtihat, icra veya aktif dosyanız hakkında bir soru sorun..." onkeydown="if(event.key==='Enter') sendAiMessage()">
+        <button class="btn btn-gold" onclick="sendAiMessage()">Gönder</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="app.js"></script>
 </body>
 </html>
+
 
 

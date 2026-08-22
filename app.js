@@ -1984,4 +1984,175 @@ function showToast(message, type = 'success') {
 }
 
 // ===================== INIT =====================
+
+
+// ===================== YAPAY ZEKÂ HUKUK ASİSTANI ENGINE =====================
+let aiChatHistory = [
+  {
+    role: 'assistant',
+    text: '<p>Merhaba Sayın Meslektaşım. Ben <strong>Sigorta Hukuku Yapay Zekâ Asistanınızım</strong>.</p><p>Sigorta şirketi vekilliğiniz kapsamındaki poliçe savunmaları, içtihatlar, bedeni/maddi tazminat hesapları, icra riskleri veya sisteme girdiğiniz aktif dosya hakkında bana dilediğiniz soruyu sorabilirsiniz.</p>'
+  }
+];
+
+function openAiChatModal() {
+  document.getElementById('aiChatModal').classList.add('active');
+  renderAiMessages();
+}
+
+function closeAiChatModal() {
+  document.getElementById('aiChatModal').classList.remove('active');
+}
+
+function clearAiChat() {
+  aiChatHistory = [
+    {
+      role: 'assistant',
+      text: '<p>Sohbet geçmişi sıfırlandı. Yeni sorunuzu yöneltebilirsiniz.</p>'
+    }
+  ];
+  renderAiMessages();
+}
+
+function sendQuickPrompt(promptText) {
+  document.getElementById('aiChatInput').value = promptText;
+  sendAiMessage();
+}
+
+function renderAiMessages() {
+  const container = document.getElementById('aiChatMessages');
+  if (!container) return;
+
+  let html = '';
+  aiChatHistory.forEach(msg => {
+    const isUser = msg.role === 'user';
+    html += `
+      <div class="ai-msg-bubble ${isUser ? 'ai-msg-user' : 'ai-msg-assistant'}">
+        ${isUser ? `<div style="font-weight:600; margin-bottom:4px; font-size:0.8rem; opacity:0.8;">Siz (Avukat)</div>${escapeHtml(msg.text)}` : `<div style="font-weight:700; color:var(--gold); margin-bottom:6px; font-size:0.82rem;">🤖 AI Hukuk Asistanı</div>${msg.text}`}
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+  container.scrollTop = container.scrollHeight;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function sendAiMessage() {
+  const inputEl = document.getElementById('aiChatInput');
+  const query = inputEl.value.trim();
+  if (!query) return;
+
+  // Add User Message
+  aiChatHistory.push({ role: 'user', text: query });
+  inputEl.value = '';
+  renderAiMessages();
+
+  // Simulate AI Thinking & Answer Generation
+  const container = document.getElementById('aiChatMessages');
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'ai-msg-bubble ai-msg-assistant';
+  typingDiv.id = 'aiTypingIndicator';
+  typingDiv.innerHTML = `<span style="color:var(--text-muted);"><em>AI Hukuk Asistanı inceliyor ve yanıt hazırlıyor...</em></span>`;
+  container.appendChild(typingDiv);
+  container.scrollTop = container.scrollHeight;
+
+  setTimeout(() => {
+    const typing = document.getElementById('aiTypingIndicator');
+    if (typing) typing.remove();
+
+    const responseText = processAiQuery(query);
+    aiChatHistory.push({ role: 'assistant', text: responseText });
+    renderAiMessages();
+  }, 600);
+}
+
+function processAiQuery(query) {
+  const q = query.toLowerCase();
+  const d = getFormData();
+  const hasDosya = Boolean(d.dosyaNo || d.mahkeme || d.kazaTarihi);
+
+  // 1. Aktif Dosya / Risk / Zamanaşımı Sorusu
+  if (q.includes('aktif dosya') || q.includes('şu anki dosya') || q.includes('bu dosya') || q.includes('risk analizi')) {
+    if (!hasDosya) {
+      return `<p>Şu an formda girilmiş aktif bir dosya verisi bulunmuyor. Form adımlarına (Dosya No, Kaza Tarihi, Dava Tarihi, Poliçe Limiti vb.) bilgileri girdiğinizde bu dosya hakkında canlı hukuki ve mali risk analizi yapabilirim.</p>`;
+    }
+
+    let resp = `<p><strong>Açık Dosya Analiz Raporu (${d.dosyaNo || 'İsimsiz Dosya'}):</strong></p>`;
+    resp += `<ul>`;
+    resp += `<li><strong>Mahkeme / Esas:</strong> ${d.mahkeme || 'Belirtilmedi'} / ${d.esasNo || '—'}</li>`;
+    resp += `<li><strong>Poliçe & Hasar Türü:</strong> ${d.policeTuru ? d.policeTuru.toUpperCase() : 'ZMSS'} | ${d.hasarTuru ? d.hasarTuru.toUpperCase() : 'Maddi'}</li>`;
+    resp += `<li><strong>Kaza Tarihi:</strong> ${formatDate(d.kazaTarihi) || '—'} | <strong>Dava Tarihi:</strong> ${formatDate(d.davaTarihi) || '—'}</li>`;
+    resp += `<li><strong>Poliçe Teminat Limiti:</strong> ${d.policeLimiti ? formatCurrency(parseFloat(d.policeLimiti)) : 'Girilmedi'}</li>`;
+    resp += `<li><strong>Kusur Dağılımı:</strong> Sigortalı %${d.kusurOrani || 50} | Davacı %${d.davaciKusur || 50}</li>`;
+    resp += `</ul>`;
+
+    // Zamanaşımı kontrolü
+    if (d.kazaTarihi && d.davaTarihi) {
+      const kaza = new Date(d.kazaTarihi);
+      const dava = new Date(d.davaTarihi);
+      const farkYil = (dava - kaza) / (1000 * 60 * 60 * 24 * 365.25);
+      if (farkYil > 2) {
+        resp += `<p><strong>⏱ Zamanaşımı Uyarı:</strong> Kaza ile dava tarihi arasında <strong>${farkYil.toFixed(1)} yıl</strong> bulunmaktadır. KTK m. 109 uyarınca 2 yıllık zamanaşımı dolmuş görünmektedir. Ceza dosyası yoksa <strong>derhal zamanaşımı def'i ileri sürülmelidir</strong>.</p>`;
+      } else {
+        resp += `<p><strong>⏱ Zamanaşımı Durumu:</strong> Kaza ile dava arası ${farkYil.toFixed(1)} yıl olup 2 yıllık zamanaşımı süresi içinde dava açılmıştır.</p>`;
+      }
+    }
+
+    resp += `<p><strong>Tavsiye Edilen Savunma Stratejisi:</strong> Cevap dilekçesinde poliçe limiti (${d.policeLimiti ? formatCurrency(parseFloat(d.policeLimiti)) : 'limit içi'}) sınırlandırılması, %${d.davaciKusur || 50} müterafik kusur tenzili (TBK m. 52) ve varsa önceki ödemelerin mahsubu talep edilmelidir.</p>`;
+    return resp;
+  }
+
+  // 2. Kasko / Alkol / İlliyet Bağı
+  if (q.includes('kasko') || q.includes('alkol') || q.includes('illiyet')) {
+    return `
+      <p><strong>Kasko Sigortasında Alkollü Kullanım ve Yargıtay İlliyet Bağı İlkesi:</strong></p>
+      <p><strong>1. Münhasıran Alkol Etkisi Şartı:</strong> Yargıtay Hukuk Genel Kurulu'nun yerleşik kararlarına göre, sırf sürücünün alkollü olması kaskoda tazminatı reddetmek için yeterli değildir. Kazanın <em>münhasıran (sırf)</em> alkolün etkisi altında gerçekleştiğinin sigortacı tarafından ispatlanması gerekir.</p>
+      <p><strong>2. İspat Yükü Sigortacıdadır:</strong> Nörolojik veya fiziki engel, yol kusuru, karşı tarafın %100 kusuru veya hava şartları kazaya etki etmişse illiyet bağı kesilir ve kasko teminatı geçerli olur.</p>
+      <p><strong>3. Eksik Sigorta & Muafiyet:</strong> Kasko dosyalarında TTK m. 1461 eksik sigorta indirimi ve poliçedeki tenzili muafiyet tutarları mutlaka hesaplamadan düşülmelidir.</p>
+    `;
+  }
+
+  // 3. Destekten Yoksun Kalma (DYK) / Bedeni Hasar / Evlenme İndirimi
+  if (q.includes('destek') || q.includes('dyk') || q.includes('evlenme') || q.includes('bedeni') || q.includes('maluliyet')) {
+    return `
+      <p><strong>👑 Bedeni Hasar ve Destekten Yoksun Kalma (DYK) Hesap Esasları:</strong></p>
+      <p><strong>1. Destek Payları Dağıtımı:</strong> Evli ve çocuklu merhumda Eş %50, Çocuklar %25'er pay alır. Bekar ve vefat eden gençlerde Anne %25, Baba %25 destek payı hakkına sahiptir.</p>
+      <p><strong>2. Eşin Yeniden Evlenme İhtimali İndirimi:</strong> Sağ kalan dul eşin yaşı gençleştikçe ve çocuk sayısı azaldıkça Yargıtay ve AYİM cetvellerine göre %10 ile %50 arasında evlenme indirimi tazminattan düşülür.</p>
+      <p><strong>3. SGK Peşin Sermaye Değeri Mahsubu:</strong> 5510 m. 21 uyarınca SGK'nın bağladığı ölüm aylığı / sürekli iş göremezlik geliri PSD'si tazminattan mahsup edilmelidir.</p>
+      <p><strong>4. Aktüerya Parametreleri:</strong> TRH-2010 yaşam tablosu, %1,8 teknik faiz ve progresif rant yöntemi (1/Kn formülü) uygulanmalıdır.</p>
+    `;
+  }
+
+  // 4. İcra / Fazla Ödeme İadesi İİK 40 / Haciz Fekki
+  if (q.includes('icra') || q.includes('iade') || q.includes('haciz') || q.includes('iik 40') || q.includes('stopaj')) {
+    return `
+      <p><strong>İcra & İnfaz Yönetimi Usul Kuralları:</strong></p>
+      <p><strong>1. İİK m. 40 İcranın İadesi:</strong> İstinaf veya Temyiz incelemesinde yerel mahkeme kararı bozulup dava reddedilirse, icra dosyasına ödenen tüm tazminat ve masraflar alacaklıdan 7 günlük muhtıra çıkarılarak iade alınır.</p>
+      <p><strong>2. Haciz Fekki (Banka/Araç/Taşınmaz):</strong> Dosya borcu ödendiğinde veya icrayı durdurma teminat mektubu sunulduğunda 89/1 banka blokajları ve araç hacizleri derhal kaldırılmalıdır.</p>
+      <p><strong>3. SMM %20 Stopaj Kesintisi:</strong> Karşı taraf vekalet ücreti ödenirken %20 Gelir Vergisi Stopajı kesilerek vergi dairesine beyan edilir ve icra dosyası infazen kapatılır.</p>
+    `;
+  }
+
+  // 5. Temel İlkeler & Doktrin
+  if (q.includes('ilke') || q.includes('zenginleşme') || q.includes('tazminat ilkesi') || q.includes('doktrin')) {
+    return `
+      <p><strong>Sigorta Hukukuna Hâkim Olan Temel Doktrin İlkeleri:</strong></p>
+      <p><strong>1. Tazminat İlkesi (Indemnity Principle):</strong> TTK m. 1460 ve TBK m. 50 uyarınca sigorta tazminatı gerçek zararı aşamaz. Sigorta zenginleşme aracı olamaz.</p>
+      <p><strong>2. Azami İyiniyet (Uberrimae Fidei):</strong> TTK m. 1435 beyan yükümlülüğü uyarınca sigortalı gerçeğe uygun beyanda bulunmak zorundadır.</p>
+      <p><strong>3. Halefiyet ve Rücu (TTK m. 1472):</strong> Sigortacı tazminatı ödediğinde halef olur ve 3. kişilere rücu eder; çifte tazminat yasaktır.</p>
+    `;
+  }
+
+  // General Insurance Defense Response
+  return `
+    <p>Sorunuz sigorta şirketi vekilliği perspektifiyle değerlendirilmiştir.</p>
+    <p>Sigorta hukukunda temel prensip; poliçe şartları, TTK m. 1401-1520 hükümleri ve Yargıtay Hukuk Genel Kurulu kararları çerçevesinde <strong>gerçek zararın poliçe limiti içinde tazmini</strong>dir.</p>
+    <p>Aktif dosyanızla ilgili net hesaplama veya dilekçe taslağı almak isterseniz sol menüdeki adımları doldurup <strong>"Aktif dosya risk analizi"</strong> butonuna tıklayabilirsiniz.</p>
+  `;
+}
+
 document.addEventListener('DOMContentLoaded', () => { toggleCezaFields(); toggleBedeniFields(); calculateTotals(); updateKusur(); });
