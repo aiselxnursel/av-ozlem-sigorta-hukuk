@@ -700,32 +700,84 @@
       <!-- Tab: Bedeni Hasar -->
       <div class="tab-content" id="tab-bedeniHasar">
         <div class="form-section">
-          <div class="form-section-title">Bedeni Hasar Kalemleri</div>
-          <div class="form-grid form-grid-2">
-            <div class="form-group">
-              <label class="form-label">Geçici İş Göremezlik Tazminatı (TL)</label>
-              <input type="number" class="form-input" id="geciciTazminat" placeholder="0,00" step="0.01" oninput="calculateTotals()">
-            </div>
+          <div class="form-section-title">Bedeni Hasar Tazminat Kalemleri</div>
+          <div class="form-grid form-grid-3">
             <div class="form-group">
               <label class="form-label">Sürekli İş Göremezlik Tazminatı (TL)</label>
               <input type="number" class="form-input" id="surekliTazminat" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+              <span class="form-hint">Kalıcı sakatlık tazminatı</span>
             </div>
             <div class="form-group">
-              <label class="form-label">Bakıcı Gideri (TL)</label>
+              <label class="form-label">Geçici İş Göremezlik Tazminatı (TL)</label>
+              <input type="number" class="form-input" id="geciciTazminat" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+              <span class="form-hint">İstirahat dönemi kazanç kaybı</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Destekten Yoksun Kalma (DYK) (TL)</label>
+              <input type="number" class="form-input" id="destekTazminat" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+              <span class="form-hint">Ölümlü dosyalarda destek zararı</span>
+            </div>
+          </div>
+          <div class="form-grid form-grid-3 mt-md">
+            <div class="form-group">
+              <label class="form-label">Bakıcı Gideri (TBK m. 54) (TL)</label>
               <input type="number" class="form-input" id="bakiciGideri" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+              <span class="form-hint">Geçici veya sürekli bakıcı maliyeti</span>
             </div>
             <div class="form-group">
-              <label class="form-label">Tedavi Giderleri (TL)</label>
+              <label class="form-label">Tedavi & İyileşme Giderleri (TL)</label>
               <input type="number" class="form-input" id="tedaviGideri" placeholder="0,00" step="0.01" oninput="calculateTotals()">
+              <span class="form-hint">SGK dışı belgeye dayalı masraflar</span>
             </div>
             <div class="form-group">
               <label class="form-label">Manevi Tazminat (TL)</label>
               <input type="number" class="form-input" id="maneviTazminat" placeholder="0,00" step="0.01" oninput="calculateTotals()">
             </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Trafik İş Kazası & SGK Rücu Parametreleri</div>
+          <div class="form-grid form-grid-3">
             <div class="form-group">
-              <label class="form-label">Destekten Yoksun Kalma (TL)</label>
-              <input type="number" class="form-input" id="destekTazminat" placeholder="0,00" step="0.01" oninput="calculateTotals()">
-              <span class="form-hint">Ölümlü dosyalarda</span>
+              <label class="form-label">SGK Peşin Sermaye Değeri (PSD) (TL)</label>
+              <input type="number" class="form-input" id="sgkPesinSermaye" placeholder="0,00" step="0.01">
+              <span class="form-hint">5510 m. 21 uyarınca bağlanan gelir PSD'si</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">SGK Geçici Ödenek / Tedavi Ödemesi (TL)</label>
+              <input type="number" class="form-input" id="sgkGeciciOdeme" placeholder="0,00" step="0.01">
+              <span class="form-hint">İstirahat ve hastane ödenekleri</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kaçınılmazlık İndirimi Oranı (%)</label>
+              <input type="number" class="form-input" id="kacinilmazlikOrani" placeholder="0" min="0" max="100">
+              <span class="form-hint">İş kazalarında öngörülemeyen haller</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Ölümlü Kazalarda DYK & İskonto Detayları</div>
+          <div class="form-grid form-grid-3">
+            <div class="form-group">
+              <label class="form-label">Hak Sahipleri Yapısı</label>
+              <select class="form-select" id="dykHakSahipleri">
+                <option value="es_cocuk">Eş + Çocuklar</option>
+                <option value="es_yalniz">Sadece Eş (Çocuksuz)</option>
+                <option value="anne_baba">Anne + Baba (Bekar/Çocuk Vefatı)</option>
+                <option value="es_anne_baba">Eş + Anne + Baba</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Eşin Yeniden Evlenme İhtimali İndirimi (%)</label>
+              <input type="number" class="form-input" id="yenidenEvlenmeOrani" placeholder="0" min="0" max="50">
+              <span class="form-hint">AYİM / HGK cetvellerine göre</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Çocuk Ölümlerinde Yetiştirme Gideri Mahsubu (TL)</label>
+              <input type="number" class="form-input" id="yetistirmeGideri" placeholder="0,00" step="0.01">
+              <span class="form-hint">18 yaşa kadarki yetiştirme indirimi</span>
             </div>
           </div>
         </div>
@@ -1720,7 +1772,8 @@
     </div>
     <div class="modal-body">
       <div class="ictihat-cat-bar">
-        <button class="ictihat-cat-btn active" data-hbcat="kasko" onclick="filterHandbook('kasko')">Kasko Rehberi</button>
+        <button class="ictihat-cat-btn active" data-hbcat="bedeni" onclick="filterHandbook('bedeni')">👑 Bedeni Hasar & DYK</button>
+        <button class="ictihat-cat-btn" data-hbcat="kasko" onclick="filterHandbook('kasko')">Kasko Rehberi</button>
         <button class="ictihat-cat-btn" data-hbcat="isveren" onclick="filterHandbook('isveren')">İşveren Sorumluluk</button>
         <button class="ictihat-cat-btn" data-hbcat="maden" onclick="filterHandbook('maden')">Maden & Koltuk FK</button>
         <button class="ictihat-cat-btn" data-hbcat="sovtaj" onclick="filterHandbook('sovtaj')">Sovtaj & Muafiyet</button>

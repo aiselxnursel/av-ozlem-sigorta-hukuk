@@ -785,6 +785,33 @@ function generatePetition() {
     p += `<p>Ferdi Kaza Sigortası Genel Şartları uyarınca sakatlık ve ölüm teminatı maktu nitelikte olup sakatlık derecesi oranında ödenir. Teminat üst sınırını aşan veya teminat dışı kalan taleplerin reddi gerekir.</p>\n\n`;
   }
 
+
+  // ──── BEDENİ HASAR & DYK & TRAFİK İŞ KAZASI ÖZEL SAVUNMALARI ────
+  if (['bedeni', 'karma', 'olumlu'].includes(d.hasarTuru)) {
+    p += `<h3>BEDENİ HASAR VE DESTEKTEN YOKSUN KALMA (DYK) ÖZEL DEF'İ VE İTİRAZLARIMIZ</h3>\n`;
+    
+    const sgkPsd = parseFloat(document.getElementById('sgkPesinSermaye')?.value || 0);
+    if (sgkPsd > 0) {
+      p += `<p><strong>1. SGK Peşin Sermaye Değeri (PSD) Mahsubu (5510 m. 21):</strong> SGK tarafından davacıya / hak sahiplerine bağlanan gelirin <strong>${formatCurrency(sgkPsd)}</strong> tutarındaki Peşin Sermaye Değeri (PSD), 5510 sayılı Kanun m. 21 ve Yargıtay HGK kararları uyarınca hükmedilecek tazminattan mahsup edilmelidir.</p>\n`;
+    }
+    
+    const yenidenEvlenme = parseFloat(document.getElementById('yenidenEvlenmeOrani')?.value || 0);
+    if (yenidenEvlenme > 0) {
+      p += `<p><strong>2. Eşin Yeniden Evlenme İhtimali İndirimi:</strong> Sağ kalan eşin yaşı ve çocuk durumu göz önüne alınarak AYİM ve Yargıtay Hukuk Genel Kurulu yaş cetvellerine göre <strong>%${yenidenEvlenme}</strong> oranında yeniden evlenme ihtimali indirimi tazminattan düşülmelidir.</p>\n`;
+    }
+
+    const yetistirme = parseFloat(document.getElementById('yetistirmeGideri')?.value || 0);
+    if (yetistirme > 0) {
+      p += `<p><strong>3. Yetiştirme Gideri Mahsubu:</strong> Vefat eden çocuğun 18 yaşına kadar yapılan bakım ve yetiştirme giderlerinin (<strong>${formatCurrency(yetistirme)}</strong>) destekten yoksun kalma tazminatından tenzili gerekmektedir.</p>\n`;
+    }
+
+    const kacinilmazlik = parseFloat(document.getElementById('kacinilmazlikOrani')?.value || 0);
+    if (kacinilmazlik > 0) {
+      p += `<p><strong>4. İş Kazasında Kaçınılmazlık İndirimi:</strong> Meydana gelen kaza teknik gelişmelere rağmen öngörülemez ve önlenemez nitelikte olup kaza riskinde <strong>%${kacinilmazlik}</strong> oranında kaçınılmazlık payı bulunmaktadır. Sorumluluk bu oran nispetinde indirilmelidir.</p>\n`;
+    }
+    p += `\n`;
+  }
+
   // ──── HESAPLAMA İTİRAZI ────
   if (document.getElementById('sHesaplama').checked) {
     const h = ICTIHAT.hesaplama_trh2010;
@@ -1504,6 +1531,20 @@ function resetForm() {
 
 // ===================== SİGORTA VEKİLİ EL KİTABI & REHBERLER =====================
 const HANDBOOK_DATA = {
+  bedeni: [
+    {
+      title: "👑 Tazminat Hukukunun Kraliçesi: Bedeni Hasar, DYK & Maluliyet Rehberi",
+      badge: "Kraliçe Modül",
+      content: `
+        <p><strong>1. Sürekli İş Göremezlik (Maluliyet) Esasları:</strong> TBK m. 54 uyarınca bedensel zarara uğrayan kişinin çalışma gücü kaybı oranında tazminat isteme hakkı vardır. Maluliyet tespitinin kaza tarihindeki yürürlükteki mevzuata (Erişkinler İçin Engellilik Değerlendirmesi Hakkında Yönetmelik / ATK Kriterleri) uygun yapılması şarttır.</p>
+        <p><strong>2. Destekten Yoksun Kalma Tazminatı (DYK - TBK m. 53/3):</strong> Ölenin yardımından mahrum kalan yakınlarının uğradığı zarardır. Destek payları dağıtımında: Eş %50, Çocuklar %25'er pay alır; ölen çocuk bekar ise Anne %25, Baba %25 destek payı alır.</p>
+        <p><strong>3. Eşin Yeniden Evlenme İhtimali İndirimi:</strong> Eşin vefatı sonrasında yeniden evlenme olasılığı AYİM / Yargıtay HGK yaş cetvellerine göre belirlenir. Sağ kalan eşin yaşı gençleştikçe ve çocuk sayısı azaldıkça yeniden evlenme ihtimali indirimi (örneğin %10 - %50 arası) tazminattan düşülür.</p>
+        <p><strong>4. SGK Peşin Sermaye Değeri (PSD) Mahsubu:</strong> 5510 sayılı Kanun m. 21 çerçevesinde SGK tarafından hak sahiplerine bağlanan ölüm aylığının / sürekli iş göremezlik gelirinin peşin sermaye değeri sigortacının/işverenin sorumluluk oranında tazminattan mahsup edilir.</p>
+        <p><strong>5. Bakıcı Gideri (TBK m. 54):</strong> Başkasının bakımına muhtaç hale gelen ağır malullerde brüt/net asgari ücret üzerinden bakıcı gideri hesaplanır. Ancak evde aile fertlerince bakılsa dahi bakıcı gideri tazminatına hükmedilir.</p>
+      `
+    }
+  ],
+
   kasko: [
     {
       title: "Kasko Sigortası Genel Şartları & Temel Esaslar",
