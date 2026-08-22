@@ -1529,6 +1529,180 @@ function resetForm() {
 
 
 
+
+
+// ===================== SİGORTA HUKUKU AKADEMİSİ & DOKTRİN KÜRSÜSÜ =====================
+const ACADEMY_DATA = {
+  ilkeler: [
+    {
+      title: "1. Tazminat İlkesi (Indemnity Principle & Zenginleşme Yasağı)",
+      badge: "Temel Doktrin İlkesi",
+      content: `
+        <p><strong>Akademik İnceleme:</strong> Tazminat ilkesi, zarar sigortalarının (maddi ve bedeni) en temel direğidir. TTK m. 1460 ve TBK m. 50 hükümleri uyarınca; sigorta tazminatı hiçbir şekilde sigortalının / zarar görenin uğradığı gerçek zararı aşamaz. Sigorta, bir zenginleşme veya kazanç sağlama aracı haline getirilemez.</p>
+        <p><strong>Dilekçe ve Savunma Stratejisine Yansıması:</strong> Cevap dilekçesinde ve rapor itirazlarında bu ilke; <em>"Eski ile Yeni Farkı Mahsubu"</em>, <em>"Sovtaj (Hurda) Mahsubu"</em>, <em>"Mükerrer Tazminat Yasağı"</em> ve <em>"SGK Peşin Sermaye Değeri İndirimi"</em> savunmalarının teorik omurgasını oluşturur. Zarar görenin kaza öncesi durumundan daha zengin bir konuma getirilmesi hukuken imkânsızdır.</p>
+        <p><strong>Doktrinsel Görüşler & Mevzuat:</strong> TTK m. 1459, 1460, 1461 (Eksik Sigorta), 1462 (Aşkın Sigorta); Prof. Dr. Rayegân Kender, Prof. Dr. Samim Ünan.</p>
+      `
+    },
+    {
+      title: "2. Azami İyiniyet İlkesi (Uberrimae Fidei / Utmost Good Faith)",
+      badge: "Temel Doktrin İlkesi",
+      content: `
+        <p><strong>Akademik İnceleme:</strong> Sigorta sözleşmeleri, diğer borç ilişkilerine kıyasla çok daha yüksek seviyede bir karşılıklı dürüstlük ve iyiniyet gerektirir (TMK m. 2 / TTK m. 1435). Sigortacı, riski kabul ederken ve primi belirlerken tamamen sigorta ettirenin beyanına güvenmek zorundadır (Bilgi Asimetrisi).</p>
+        <p><strong>Dilekçe ve Savunma Stratejisine Yansıması:</strong> TTK m. 1435 - 1444 uyarınca sigortalının sözleşme yapılırken veya riziko gerçekleştikten sonra eksik, yanlış veya hileli beyanda bulunması durumunda; sigorta şirketinin sözleşmeden cayma, tazminatı ödemeden kaçınma veya tazminattan orantılı indirim yapma hakkının hukuki dayanağıdır.</p>
+        <p><strong>Doktrinsel Görüşler & Mevzuat:</strong> TTK m. 1435, 1439, 1444; Prof. Dr. Hüseyin Ülgen, Doç. Dr. Ecehan Yeşilova Aras.</p>
+      `
+    },
+    {
+      title: "3. Sigortalanabilir Menfaat İlkesi (Insurable Interest)",
+      badge: "Temel Doktrin İlkesi",
+      content: `
+        <p><strong>Akademik İnceleme:</strong> Sigorta sözleşmesinin geçerli olabilmesi için sigorta ettirenin riziko konusu değer üzerinde para ile ölçülebilir meşru bir hukuki menfaatinin bulunması şarttır (TTK m. 1408). Menfaatin yokluğu halinde sigorta sözleşmesi doğrudan hükümsüzdür.</p>
+        <p><strong>Dilekçe ve Savunma Stratejisine Yansıması:</strong> Aracın maliki olmayan veya aracı işletme yetkisi / meşru menfaati bulunmayan kişilerin açtığı davalarda "Aktif Dava Ehliyeti Yokluğu / Menfaat Şartı Noksanlığı" nedeniyle davanın usulden reddi talebimizin temel dayanağıdır.</p>
+        <p><strong>Doktrinsel Görüşler & Mevzuat:</strong> TTK m. 1408, 1453, 1454; Prof. Dr. Kemal Şenocak.</p>
+      `
+    },
+    {
+      title: "4. Riziko ve İlliyet Bağı İlkesi (Principle of Proximate Cause)",
+      badge: "Temel Doktrin İlkesi",
+      content: `
+        <p><strong>Akademik İnceleme:</strong> Sigortacının tazminat ödeme borcunun doğabilmesi için, meydana gelen zararın doğrudan poliçede teminat altına alınan rizikonun gerçekleşmesi neticesinde doğmuş olması (Uygun İlliyet Bağı) şarttır.</p>
+        <p><strong>Dilekçe ve Savunma Stratejisine Yansıması:</strong> Alkollü araç kullanımı, ehliyetsiz sürüş veya ağır kusur savunmalarında; zararın münhasıran bu sebeplerden doğup doğmadığının (illiyet bağı testi) Yargıtay Hukuk Genel Kurulu kriterlerine göre sorgulanmasıdır.</p>
+        <p><strong>Doktrinsel Görüşler & Mevzuat:</strong> TBK m. 49, 51; Prof. Dr. Fikret Eren.</p>
+      `
+    },
+    {
+      title: "5. Halefiyet ve Rücu İlkesi (Subrogation Principle)",
+      badge: "Temel Doktrin İlkesi",
+      content: `
+        <p><strong>Akademik İnceleme:</strong> TTK m. 1472 uyarınca sigortacı, tazminatı ödediğinde hukuken sigortalısının halefi olur ve sigortalının 3. kişilere karşı sahip olduğu dava/takip haklarını kazanır. Bu ilke, zarar görenin hem sigortacıdan hem de kusurlu 3. kişiden çifte tazminat almasını engeller.</p>
+        <p><strong>Dilekçe ve Savunma Stratejisine Yansıması:</strong> Rücuen tazminat davalarında sigorta şirketinin davacı sıfatıyla 3. kişilere veya kendi sigortalısına (ağır kusur/alkol durumunda) başvurmasının ana hukuki mekanizmasıdır.</p>
+        <p><strong>Doktrinsel Görüşler & Mevzuat:</strong> TTK m. 1472, KTK m. 95.</p>
+      `
+    },
+    {
+      title: "6. Zararı Önleme ve Azaltma Yükümlülüğü (Duty to Mitigate)",
+      badge: "Temel Doktrin İlkesi",
+      content: `
+        <p><strong>Akademik İnceleme:</strong> TTK m. 1448 uyarınca sigortalı veya zarar gören, riziko gerçekleştiğinde zararı önlemek veya genişlemesini engellemek için makul tedbirleri almakla yükümlüdür.</p>
+        <p><strong>Dilekçe ve Savunma Stratejisine Yansıması:</strong> Araç onarımında makul olmayan ikame araç süresi talepleri veya gereksiz tıbbi harcamalara karşı TBK m. 52 ve TTK m. 1448 uyarınca tazminat indirimi talebimizin teorik dayanağıdır.</p>
+      `
+    }
+  ],
+  tezler: [
+    {
+      title: "1. Sigortacılıkta Yapay Zekâ ve Algoritmik Risk Skorlamasının Hukuki Sorumluluğu ve Şeffaflığı",
+      badge: "Özgün Tez Konusu (Yapay Zekâ & Hukuk)",
+      content: `
+        <p><strong>Problem Tanımı:</strong> Sigorta şirketleri aktüeryal risk kabulü, prim belirlenmesi ve otomatik hasar ihbar tasfiyesinde yapay zekâ algoritmalarını yoğun olarak kullanmaktadır. Ancak algoritmik ayrımcılık ve Kara Kutu (Black Box) kararlarının hukuki denetimi belirsizdir.</p>
+        <p><strong>Doktrinsel İnceleme Alanı:</strong> KVKK m. 11, AB Yapay Zekâ Yasası (AI Act) ve TTK m. 1435 çerçevesinde algoritmik risk skorlamasının yargısal denetimi ve sigorta şirketinin kusursuz sorumluluğu.</p>
+        <p><strong>Önerilen Tez Hipotezi:</strong> <em>"Sigortacılıkta yapay zekâ karar sistemlerinin ürettiği hatalı risk ve reddiyat kararlarında sigorta şirketinin sorumluluğu adam çalıştıranın sorumluluğu (TBK m. 66) kıyasıyla düzenlenmelidir."</em></p>
+      `
+    },
+    {
+      title: "2. Sigorta Şirketleri Yönünden Dava Dışı Doğrudan İnfaz Protokollerinin İbraname Rejimi (TBK m. 420) Karşısındaki Geçerliliği",
+      badge: "Özgün Tez Konusu (Hasar Tasfiyesi)",
+      content: `
+        <p><strong>Problem Tanımı:</strong> Sigorta şirketleri dava açılmadan önce zarar görenlerle anlaşarak (dava dışı doğrudan tasfiye) sulh ve ibraname imzalamaktadır. Ancak 2 yıl sonra açılan davalarda TBK m. 420 (makbuz niteliği) gerekçe gösterilerek ibranameler geçersiz sayılmaktadır.</p>
+        <p><strong>Doktrinsel İnceleme Alanı:</strong> TBK m. 132 (İbra) ve TBK m. 420 ile KTK m. 111/2 arasındaki özel kanun-genel kanun çatışması. Sigorta şirketinin mali öngörülebilirliği yönünden ibranamelerin kesin hükümsüzlük şartları.</p>
+        <p><strong>Önerilen Tez Hipotezi:</strong> <em>"KTK m. 111/2 uyarınca 2 yıllık hak düşürücü süre içinde açılmayan iptal davalarında, sigorta ibranameleri TBK m. 420 kısıtlamasından muaf tutularak kesin ibra sebebi sayılmalıdır."</em></p>
+      `
+    },
+    {
+      title: "3. Siber Risk Poliçelerinde Ransomware (Fidye Yazılımı) Ödemelerinin Teminat Dışılığı ve 'Ağır İhmal' Sınırı",
+      badge: "Özgün Tez Konusu (Siber Hukuk)",
+      content: `
+        <p><strong>Problem Tanımı:</strong> Kurumsal şirketlere yönelik siber saldırılarda fidye yazılımları (Ransomware) için ödenen paraların veya veri kaybı zararlarının Siber Sorumluluk Sigortaları kapsamında teminat alınıp alınamayacağı konusu Türkiye'de bakirdir.</p>
+        <p><strong>Doktrinsel İnceleme Alanı:</strong> Siber güvenlik önlemlerinin yetersizliği "Ağır İhmal" sayılır mı? Kamu düzenine aykırılık gerekçesiyle fidye ödemeleri sigorta teminatı dışı tutulabilir mi?</p>
+        <p><strong>Önerilen Tez Hipotezi:</strong> <em>"Fidye ödemeleri suç gelirlerinin aklanması riski taşıdığından kamu düzenine aykırıdır; ancak siber veri kurtarma masrafları TTK m. 1448 zararı azaltma borcu kapsamında sigortacıca ödenmelidir."</em></p>
+      `
+    },
+    {
+      title: "4. İklim Değişikliği ve Doğal Afetlerde 'Parametrik Sigorta Sözleşmeleri'nin Türk Ticaret Kanunu m. 1401 Karşısındaki Hukuki Niteliği",
+      badge: "Özgün Tez Konusu (İklim & Finans)",
+      content: `
+        <p><strong>Problem Tanımı:</strong> Parametrik sigortalar, eksper incelemesi olmaksızın belirli bir endeks (örneğin deprem büyüklüğü > 7.0 veya yağış > 100mm) gerçekleştiğinde otomatik maktu ödeme yapan yeni nesil sözleşmelerdir.</p>
+        <p><strong>Doktrinsel İnceleme Alanı:</strong> Somut zarar ispatı aranmayan parametrik sigortaların TTK m. 1401 sigorta tanımı ve tazminat ilkesi (zenginleşme yasağı) ile uyumu.</p>
+        <p><strong>Önerilen Tez Hipotezi:</strong> <em>"Parametrik sigortalar somut zarar sigortası ile meblağ sigortası arasında sui generis (kendine özgü) bir finansal teminat sözleşmesi niteliğindedir."</em></p>
+      `
+    },
+    {
+      title: "5. Rücu Hukukunda Zamanaşımı Çatışmaları: TTK m. 1482 ile KTK m. 109 ve TCK Uzamış Ceza Zamanaşımı Gerilimi",
+      badge: "Özgün Tez Konusu (Zamanaşımı & Maliye)",
+      content: `
+        <p><strong>Problem Tanımı:</strong> Sigortacının kendi sigortalısına veya 3. kişilere rücu davalarında zamanaşımı başlangıcı (tazminatın ödenme tarihi mi, olay tarihi mi?) ve uzamış ceza zamanaşımının rücu davalarına etkisi doktrinde tartışmalıdır.</p>
+        <p><strong>Doktrinsel İnceleme Alanı:</strong> Sigorta şirketlerinin bilançolarında karşılaştırılabilir teknik karşılık ayırmasını zorlaştıran rücu zamanaşımı belirsizliklerinin giderilmesi.</p>
+      `
+    },
+    {
+      title: "6. Sigorta Hukukunda 'Ahlaki Riziko' (Moral Hazard) ve Danışıklı Hasar İhbarlarında İspat Standartları",
+      badge: "Özgün Tez Konusu (Usul & İspat)",
+      content: `
+        <p><strong>Problem Tanımı:</strong> Şüpheli/hileli kaza ihbarlarında sigorta şirketinin "kaza danışıklıdır / sahtedir" iddiasında ispat yükü (HMK m. 190) ve ceza soruşturmalarının hukuk davasına etkisi (TBK m. 74).</p>
+      `
+    }
+  ]
+};
+
+let currentAcademyCat = 'ilkeler';
+
+function openAcademyModal() {
+  document.getElementById('academyModal').classList.add('active');
+  renderAcademyContent('ilkeler');
+}
+
+function closeAcademyModal() {
+  document.getElementById('academyModal').classList.remove('active');
+}
+
+function filterAcademy(cat) {
+  currentAcademyCat = cat;
+  document.querySelectorAll('#academyModal .ictihat-cat-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-acadcat') === cat);
+  });
+  renderAcademyContent(cat);
+}
+
+function renderAcademyContent(cat) {
+  const container = document.getElementById('academyContentContainer');
+  if (cat === 'notlar') {
+    const savedNotes = localStorage.getItem('sigorta_akademik_notlar') || '';
+    container.innerHTML = `
+      <div class="card" style="background:var(--bg-tertiary);">
+        <h3 style="color:var(--gold); margin-bottom:12px;">✍️ Kişisel Akademik Araştırma Not Defteri</h3>
+        <p class="form-hint mb-md">Yüksek lisans araştırmalarınız, tez fikirleriniz ve doktrinsel notlarınız için kişisel çalışma alanınız. Notlarınız otomatik kaydedilir.</p>
+        <textarea class="form-textarea" id="academicNoteText" style="height:350px; font-family:monospace; line-height:1.6;" placeholder="Yüksek lisans tez başlığı fikirleriniz, okuduğunuz makale özetleri veya doktrinsel notlarınızı buraya yazabilirsiniz...">${savedNotes}</textarea>
+        <div class="mt-md" style="display:flex; justify-content:flex-end;">
+          <button class="btn btn-primary" onclick="saveAcademyNotes()">Notları Kaydet</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const items = ACADEMY_DATA[cat] || [];
+  let html = '';
+  items.forEach(item => {
+    html += `
+      <div class="ictihat-card">
+        <div class="ictihat-card-header">
+          <span class="ictihat-tag" style="background:rgba(77, 166, 255, 0.15); color:var(--info); font-weight:600;">${item.badge}</span>
+          <h4 style="margin:8px 0; color:var(--gold); font-size:1.1rem;">${item.title}</h4>
+        </div>
+        <div class="ictihat-card-body" style="font-size:0.95rem; line-height:1.7;">
+          ${item.content}
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function saveAcademyNotes() {
+  const val = document.getElementById('academicNoteText')?.value || '';
+  localStorage.setItem('sigorta_akademik_notlar', val);
+  showToast('Akademik notlarınız başarıyla kaydedildi.', 'success');
+}
+
 // ===================== SİGORTA VEKİLİ EL KİTABI & REHBERLER =====================
 const HANDBOOK_DATA = {
   bedeni: [
